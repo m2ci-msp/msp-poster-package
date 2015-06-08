@@ -1,0 +1,8 @@
+# LaTeX
+
+# OSX
+.DS_Store
+
+# backup
+*.bak
+*.swp
