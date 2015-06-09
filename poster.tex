@@ -1,18 +1,31 @@
-\documentclass{poster}
+\documentclass[a4paper, 11pt]{article}
+%\usepackage{poster}
+\usepackage{multicol}
 \usepackage{lipsum}
 
 \begin{document}
 
+\onecolumn
+\begin{multicols}{1}
+%\twocolumn
 \section{First section}
-\lipsum[1]
-
-\section{Second section}
 \lipsum[2]
+\end{multicols}
 
-\section{Third section}
-\lipsum[1]
+\begin{multicols}{2}
+%\includegraphics[width=\linewidth]{poster2}
 
-\section{Fourth section}
-\lipsum[3]
+%\section{Left section}
+%\lipsum[1]
+
+%\section{Right section}
+%\lipsum[4]
+
+%\section{Bottom section}
+%\lipsum[2]
+%
+\section{Bottom section}
+\lipsum[2]
+\end{multicols}
 
 \end{document}
