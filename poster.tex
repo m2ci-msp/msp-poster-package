@@ -1,31 +1,37 @@
-\documentclass[a4paper, 11pt]{article}
-%\usepackage{poster}
-\usepackage{multicol}
+\documentclass[a4paper, 12pt]{article}
+\usepackage{poster}
+\usepackage{adjmulticol}
+
 \usepackage{lipsum}
+\usepackage{calc}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{setspace}
+\usepackage{calc}
 
 \begin{document}
 
-\onecolumn
-\begin{multicols}{1}
-%\twocolumn
+\begin{adjmulticols}{2}{0pt}{0pt}
 \section{First section}
 \lipsum[2]
-\end{multicols}
 
-\begin{multicols}{2}
-%\includegraphics[width=\linewidth]{poster2}
+\section{Left section}
+\lipsum[1]
+\end{adjmulticols}
 
-%\section{Left section}
-%\lipsum[1]
+\begin{adjmulticols}{1}{0pt}{0pt}
+\section{Right section}
+\lipsum[4]
+\end{adjmulticols}
 
-%\section{Right section}
-%\lipsum[4]
+\begin{adjmulticols}{2}{0pt}{0pt}
 
-%\section{Bottom section}
-%\lipsum[2]
-%
 \section{Bottom section}
 \lipsum[2]
-\end{multicols}
+
+\section{Bottom section}
+\lipsum[2]
+
+\end{adjmulticols}
 
 \end{document}

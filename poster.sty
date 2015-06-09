@@ -1,15 +1,10 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{mspposter}
 
-% use the standard article as base class
-%\LoadClass[a4paper, 11pt]{article}
-
-\RequirePackage[utf8]{inputenc}
-\RequirePackage[T1]{fontenc}
-\RequirePackage{setspace}
 \RequirePackage{microtype}
-\RequirePackage{calc}
-\RequirePackage{multicol}
+
+% for renewing the environment
+\RequirePackage{adjmulticol}
 
 \RequirePackage{ifthen}
 \RequirePackage{tikz}
@@ -17,101 +12,107 @@
 \usetikzlibrary{
   calc,
   backgrounds,
-  shadings,
-  positioning,
-  decorations.fractals,
-  decorations.shapes,
-  decorations.text,
-  decorations.pathmorphing,
-  decorations.pathreplacing,
-  decorations.footprints,
-  decorations.markings
+  positioning
 }
 
 \usepgfmodule{oo}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % class for poster
 \pgfooclass{poster}{
 
   \method poster() {
+    % set width of cell in one column layout
+    \pgfmathparse{ \textwidth - 2 * \pgfoovalueof{cellPadding}} 
+    \pgfoolet{oneColumnWidth}{\pgfmathresult}
+    % set width of cell in two column layout
+    \pgfmathparse{0.5 * \textwidth - 2 * \pgfoovalueof{cellPadding} - 0.5 * \pgfoovalueof{cellSpacing}} 
+    \pgfoolet{twoColumnWidth}{\pgfmathresult}
   }
 
-  % flag indicating if cell was added to poster
+  % ATTRIBUTES
+
+  \attribute cellSpacing = 20;
   \attribute cellOpen = false;
-
-  % standard amount of columns is 1
-  \attribute columns = 1;
-
+  \attribute columnAmount = 1;
   \attribute currentColumn = 1;
-  \attribute currentRow = 1;
+  \attribute cellWidth = \textwidth;
+  \attribute oneColumnWidth = \textwidth; 
+  \attribute twoColumnWidth = \textwidth; 
+  \attribute cellPadding = 10;
 
-  \attribute cellWidth;
-
-  \method open_cell(){
-    \pgfoothis.close_cell()
+  % METHODS
+  \method openCell(){
+    % try to close any open cell
+    \pgfoothis.closeCell()
+    % set flag to true
     \pgfooset{cellOpen}{true}
-    %
-    \ifthenelse{\equal{\pgfoovalueof{columns}}{2}}
+    % 
+    \ifthenelse{\equal{\pgfoovalueof{columnAmount}}{2}}
     {
-      \pgfmathparse{(1 / \pgfoovalueof{columns}) * 0.8 * \textwidth - 20} 
-      \pgfoolet{cellWidth}{\pgfmathresult}
       \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{1}}
       {
         \node [
-          below=of left,
+          below=\pgfoovalueof{cellSpacing}pt of left,
           box,
-          text width=\pgfoovalueof{cellWidth},
+          text width=\pgfoovalueof{twoColumnWidth},
           anchor=north]
           (current)
         \bgroup 
       }
       {
         \node [
-          below=of right,
+          below=\pgfoovalueof{cellSpacing}pt of right,
           box,
-          text width=\pgfoovalueof{cellWidth},
+          text width=\pgfoovalueof{twoColumnWidth},
           anchor=north]
           (current)
         \bgroup 
       }
     }
     {
-      \pgfmathparse{ 0.85 * \textwidth - 20} 
-      \pgfoolet{cellWidth}{\pgfmathresult}
       \node [
-        below=of center,
+        below=\pgfoovalueof{cellSpacing}pt of center,
         box,
-        text width=\pgfoovalueof{cellWidth},
+        text width=\pgfoovalueof{oneColumnWidth},
         anchor=north]
         (current)
         \bgroup 
     }
   }
 
-  \method close_cell(){
+  \method closeCell(){
+    % only close cell if it is open
     \ifthenelse{\equal{\pgfoovalueof{cellOpen}}{true}}
     {
       \egroup;
+      % use path intersections to update coordinates
       % only update center if y value is smaller
       \path let
         \p1 = (center),
         \p2 = (current.south) 
         in \ifdim \y2 < \y1 coordinate (center) at (\x1, \y2)\fi;
-%      \coordinate (center) at (current.south -| center); 
+      % set flag to false
       \pgfooset{cellOpen}{false}
-      \ifthenelse{\equal{\pgfoovalueof{columns}}{2}}
+      % update anchors and select next column
+      \ifthenelse{\equal{\pgfoovalueof{columnAmount}}{2}}
       {
+        % we have two columns, check which is the current one
         \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{1}}
         {
+          % update left anchor and move to next column
           \coordinate (left) at (current.south -| left); 
           \pgfooset{currentColumn}{2}
         }
         {
+          % update right anchor and move to first column
           \pgfooset{currentColumn}{1}
           \coordinate (right) at (current.south -| right); 
         }
       }
       {
+        % we only have one column, update left and right anchor
         \coordinate (left) at (current.south -| left); 
         \coordinate (right) at (current.south -| right); 
       }
@@ -121,19 +122,36 @@
   }
 
   % set amount of columns
-  \method set_columns(#1) {
-    \pgfoothis.close_cell()
+  \method setColumns(#1) {
+    % try to close any open cell
+    \pgfoothis.closeCell()
+    % set column amount 
+    \pgfooset{columnAmount}{#1}
+    % return to first column after change
     \pgfooset{currentColumn}{1}
-    \pgfooset{columns}{#1}
   }
 
+  \method setupAnchors() {
+    % initialize the anchors
+    \coordinate (center) at (0, .54\paperheight);
+    % align both anchors to create the wanted spacing between
+    % two columns
+    \coordinate (left) at  (-.25\textwidth - \pgfoovalueof{cellSpacing} / 4 pt, .54\paperheight);
+    \coordinate (right) at ( .25\textwidth + \pgfoovalueof{cellSpacing} / 4 pt, .54\paperheight);
+  }
 }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % create tikzpicture
 \AtBeginDocument {%
 
+  % set width
   \textwidth0.9\paperwidth
+
+  % create poster object
   \pgfoonew \poster=new poster()
+
   \parindent0pt
   \null
   \thispagestyle{empty}
@@ -142,89 +160,71 @@
   \vfill
   \hfil
   \begin{tikzpicture}[overlay,
-  box/.style={
-    fill=white, anchor=north,
-    inner sep=10,
-    draw,
-    very thick,
-    rounded corners}
+    % style for boxes
+    box/.style={
+      fill=white, anchor=north,
+      inner sep=10,
+      draw,
+      very thick,
+      rounded corners}
   ]
 
-  % initialize the anchors
-  \coordinate (center) at (0, 0.5\paperheight);
-  \coordinate (left) at (-.2\paperwidth,0.5\paperheight);
+  \poster.setupAnchors()
+
+    % for background shading
   \coordinate (bgleft) at (-.5\paperwidth,0);
   \coordinate (bgright) at (0.5\paperwidth,0);
-  \coordinate (right) at (.2\paperwidth,0.5\paperheight);
-  \coordinate (startpos) at (0,.5\paperheight);
-
   \coordinate (bottom) at (0,-.6\paperheight);
   \coordinate (upper) at (0,.57\paperheight);
-  \shade [bottom color=red!30,top color=orange!40]
-  (upper -|  bgleft) rectangle (bottom -| bgright);
+
+  % background 
+  \begin{scope}[on background layer]
+    \shade [bottom color=red!30,top color=orange!40]
+    (upper -|  bgleft) rectangle (bottom -| bgright);
+  \end{scope}
 }
 
 \AtEndDocument {%
-  % close open section
-%  \ifthenelse{\boolean{sectionopen}}{\egroup;}{}
-\poster.close_cell()
+  \poster.closeCell()
 
-\end{tikzpicture}
-\vfill
-\vbox{}
-\clearpage
+  \end{tikzpicture}
+  \vfill
+  \vbox{}
+  \clearpage
 } 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % wrapper commands to the poster class
 \renewcommand\twocolumn{%
-  \poster.set_columns(2)
+  \poster.setColumns(2)
 }
 
 \renewcommand\onecolumn{%
-  \poster.set_columns(1)
+  \poster.setColumns(1)
 }
 
-\renewenvironment{multicols}[1]{
-  \poster.set_columns(#1)
+\renewenvironment{adjmulticols}[3]{
+  \poster.setColumns(#1)
 }{
-  \poster.set_columns(1)
+  \poster.setColumns(1)
 }
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\renewcommand\columnbreak{%
+  \relax
+}
 
 \renewcommand\section[1]{%
 
-  \poster.open_cell()
-
-%  \ifthenelse{\boolean{sectionopen}}
-%    {
-%      % close previous section if it was open
-%      \egroup;
-%
-%      \node [
-%        below=of \theOldRow.south,
-%        box,
-%   %     minimum width=\getWidth{\thePosterRow}
-%        text width=0.5\textwidth % \getWidth{\thePosterRow}
-%        ] (\thePosterRow)
-%      \bgroup
-%    }
-%    {
-%      \node at (startpos) [
-%        box,
-%        text width=\textwidth %\getWidth{\thePosterRow}
-%        ] (\thePosterRow) \bgroup
-%    }
-%
+  \poster.openCell()
     % center title
     % move a little to the top
     \vspace{-1em}
     \begin{center}
     \Large\bfseries #1
     \end{center}
-%
-%    % set flag that section is open
-%    \setboolean{sectionopen}{true}
-%
 %    % remaining section is placed inside the node
 }
 
