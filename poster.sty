@@ -19,6 +19,10 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% workaround for undefined control sequence error when 
+% using tikzpicture inside a node
+\newdimen\currentWidth
+
 % class for poster
 \pgfooclass{poster}{
 
@@ -51,12 +55,13 @@
     % 
     \ifthenelse{\equal{\pgfoovalueof{columnAmount}}{2}}
     {
+      \currentWidth = \pgfoovalueof{twoColumnWidth} pt
       \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{1}}
       {
         \node [
           below=\pgfoovalueof{cellSpacing}pt of left,
           box,
-          text width=\pgfoovalueof{twoColumnWidth},
+          text width=\currentWidth,
           anchor=north]
           (current)
         \bgroup 
@@ -65,17 +70,18 @@
         \node [
           below=\pgfoovalueof{cellSpacing}pt of right,
           box,
-          text width=\pgfoovalueof{twoColumnWidth},
+          text width=\currentWidth,
           anchor=north]
           (current)
         \bgroup 
       }
     }
     {
+      \currentWidth = \pgfoovalueof{oneColumnWidth} pt
       \node [
         below=\pgfoovalueof{cellSpacing}pt of center,
         box,
-        text width=\pgfoovalueof{oneColumnWidth},
+        text width=\currentWidth,
         anchor=north]
         (current)
         \bgroup 
@@ -216,15 +222,13 @@
   \relax
 }
 
-\renewcommand\section[1]{%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\newenvironment{posterBlock}{
   \poster.openCell()
-    % center title
-    % move a little to the top
-    \vspace{-1em}
-    \begin{center}
-    \Large\bfseries #1
-    \end{center}
-%    % remaining section is placed inside the node
+}
+{
+  \poster.closeCell()
 }
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
