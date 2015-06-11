@@ -39,12 +39,6 @@
 \pgfooclass{poster}{
 
   \method poster() {
-    % set width of cell in one column layout
-    \pgfmathparse{ \textwidth - 2 * \pgfoovalueof{cellPadding}} 
-    \pgfoolet{oneColumnWidth}{\pgfmathresult}
-    % set width of cell in two column layout
-    \pgfmathparse{0.5 * \textwidth - 2 * \pgfoovalueof{cellPadding} - 0.5 * \pgfoovalueof{cellSpacing}} 
-    \pgfoolet{twoColumnWidth}{\pgfmathresult}
   }
 
   % ATTRIBUTES
@@ -142,6 +136,26 @@
     }
   }
 
+  \method updateLayout() {
+    \pgfoothis.setupAnchors()
+    % set width of cell in one column layout
+    \pgfmathparse{ \textwidth - 2 * \pgfoovalueof{cellPadding}} 
+    \pgfoolet{oneColumnWidth}{\pgfmathresult}
+    % set width of cell in two column layout
+    \pgfmathparse{0.5 * \textwidth - 2 * \pgfoovalueof{cellPadding} - 0.5 * \pgfoovalueof{cellSpacing}} 
+    \pgfoolet{twoColumnWidth}{\pgfmathresult}
+  }
+
+  \method setBlockPadding(#1) {
+    \pgfooset{cellPadding}{#1}
+    \pgfoothis.updateLayout()
+  }
+
+  \method setBlockSpacing(#1) {
+    \pgfooset{cellSpacing}{#1}
+    \pgfoothis.updateLayout()
+    }
+
   % set amount of columns
   \method setColumns(#1) {
     % try to close any open cell
@@ -191,7 +205,7 @@
       rounded corners}
   ]
 
-  \poster.setupAnchors()
+  \poster.updateLayout()
 
     % for background shading
   \coordinate (bgleft) at (-.5\paperwidth,0);
@@ -214,6 +228,18 @@
   \vbox{}
   \clearpage
 } 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\setblockpadding}[1] {
+  \poster.setBlockPadding(#1)
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\setblockspacing}[1] {
+  \poster.setBlockSpacing(#1)
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
