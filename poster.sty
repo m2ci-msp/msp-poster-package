@@ -3,9 +3,6 @@
 
 \RequirePackage{microtype}
 
-% for renewing the environment
-\RequirePackage{adjmulticol}
-
 \RequirePackage{ifthen}
 \RequirePackage{tikz}
 
@@ -47,7 +44,7 @@
   \attribute cellPadding = 10;
 
   % METHODS
-  \method openCell(){
+  \method openCell(#1){
     % try to close any open cell
     \pgfoothis.closeCell()
     % set flag to true
@@ -60,8 +57,9 @@
       {
         \node [
           below=\pgfoovalueof{cellSpacing}pt of left,
-          box,
+          #1,
           text width=\currentWidth,
+          inner sep=\pgfoovalueof{cellPadding},
           anchor=north]
           (current)
         \bgroup 
@@ -69,8 +67,9 @@
       {
         \node [
           below=\pgfoovalueof{cellSpacing}pt of right,
-          box,
+          #1,
           text width=\currentWidth,
+          inner sep=\pgfoovalueof{cellPadding},
           anchor=north]
           (current)
         \bgroup 
@@ -80,8 +79,9 @@
       \currentWidth = \pgfoovalueof{oneColumnWidth} pt
       \node [
         below=\pgfoovalueof{cellSpacing}pt of center,
-        box,
+        #1,
         text width=\currentWidth,
+        inner sep=\pgfoovalueof{cellPadding},
         anchor=north]
         (current)
         \bgroup 
@@ -168,10 +168,11 @@
   \begin{tikzpicture}[overlay,
     % style for boxes
     box/.style={
+      opacity=0.5,
+      text opacity=1.0,
       fill=white, anchor=north,
-      inner sep=10,
       draw,
-      very thick,
+      ultra thick,
       rounded corners}
   ]
 
@@ -201,31 +202,24 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% wrapper commands to the poster class
-\renewcommand\twocolumn{%
-  \poster.setColumns(2)
-}
-
-\renewcommand\onecolumn{%
+\newenvironment{onecolumnlayout}{
   \poster.setColumns(1)
+}{
 }
 
-\renewenvironment{adjmulticols}[3]{
-  \poster.setColumns(#1)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newenvironment{twocolumnlayout}{
+  \poster.setColumns(2)
 }{
   \poster.setColumns(1)
 }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\renewcommand\columnbreak{%
-  \relax
-}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\newenvironment{posterblock}{
-  \poster.openCell()
+\newenvironment{posterblock}[1][box]{
+  \poster.openCell(#1)
 }
 {
   \poster.closeCell()
