@@ -207,7 +207,7 @@
 
   \poster.updateLayout()
 
-    % for background shading
+  % for background shading
   \coordinate (bgleft) at (-.5\paperwidth,0);
   \coordinate (bgright) at (0.5\paperwidth,0);
   \coordinate (bottom) at (0,-.6\paperheight);
@@ -239,6 +239,15 @@
 
 \newcommand{\setblockspacing}[1] {
   \poster.setBlockSpacing(#1)
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\shadebackground}[2] {
+\begin{scope}[on background layer]
+  \shade [bottom color=#1,top color=#2]
+  (upper -|  bgleft) rectangle (bottom -| bgright);
+\end{scope}
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
