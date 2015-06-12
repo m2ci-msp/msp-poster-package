@@ -40,12 +40,26 @@
 \affil[4]{FooBar Research Lab, Other Place}
 \date{}
 
+% create a custom style
+\tikzset{
+  title/.style={
+    opacity=1.0,
+    fill=orange!30,
+    anchor=north,
+    draw=black,
+    ultra thick,
+    rounded corners
+  }
+}
+
 \begin{document}
-\shadebackground{red!40}{blue!30}
+
+% tweak layout
 \setblockpadding{20}
 \setblockspacing{10}
+\shadebackground{red!40}{blue!30}
 
-\begin{posterblock}
+\begin{posterblock}[title]
 \maketitle
 \thispagestyle{empty}
 \end{posterblock}
@@ -54,7 +68,7 @@
 
   \begin{posterblock}
     \section*{Left Box}
-    \lipsum[2]
+    \lipsum[4]
   \end{posterblock}
 
   \begin{posterblock}
