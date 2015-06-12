@@ -1,11 +1,10 @@
 \documentclass[a4paper, 11pt]{article}
 \usepackage{mspposter}
 \usepackage{multicol}
-%\newenvironment{posterblock}{}{}
-%\newenvironment{twocolumnlayout}{\begin{multicols}{2}}{\end{multicols}}
 
 \usepackage{lipsum}
 \usepackage{calc}
+\usepackage{microtype}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{setspace}
@@ -66,12 +65,11 @@
 \end{twocolumnlayout}
 
 \begin{posterblock}
-  \section*{Bottom Box}
+  \section*{Center Box}
   \begin{multicols}{3}
   \lipsum[4]
   \end{multicols}
 \end{posterblock}
-
 
 \begin{twocolumnlayout}
   \begin{posterblock}
@@ -84,6 +82,5 @@
     \lipsum[2]
   \end{posterblock}
 \end{twocolumnlayout}
-
 
 \end{document}
