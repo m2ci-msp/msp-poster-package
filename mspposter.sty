@@ -40,6 +40,7 @@
 
   \method poster() {
     \pgfooset{columnAmount}{1}
+    \pgfooset{currentColumn}{1}
   }
 
   % ATTRIBUTES
@@ -51,6 +52,7 @@
   \attribute blockWidth = \textwidth;
   \attribute oneColumnWidth = \textwidth; 
   \attribute twoColumnWidth = \textwidth; 
+  \attribute threeColumnWidth = \textwidth; 
   \attribute blockPadding = 10;
 
   % METHODS
@@ -92,6 +94,52 @@
     }
   }
 
+  \method openBlockThreeColumn(#1){
+    \currentWidth = \pgfoovalueof{threeColumnWidth} pt
+    \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{1}}
+    {
+      \node [
+        below=\pgfoovalueof{blockSpacing}pt of c3left,
+        #1,
+        text width=\currentWidth,
+        inner sep=\pgfoovalueof{blockPadding},
+        anchor=north]
+        (current)
+      \bgroup 
+    }
+    {
+      % else
+    }
+    \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{2}}
+    {
+      \node [
+        below=\pgfoovalueof{blockSpacing}pt of c3center,
+        #1,
+        text width=\currentWidth,
+        inner sep=\pgfoovalueof{blockPadding},
+        anchor=north]
+        (current)
+      \bgroup 
+    }
+    {
+      % else
+    }
+    \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{3}}
+    {
+      \node [
+        below=\pgfoovalueof{blockSpacing}pt of c3right,
+        #1,
+        text width=\currentWidth,
+        inner sep=\pgfoovalueof{blockPadding},
+        anchor=north]
+        (current)
+      \bgroup 
+    }
+    {
+      % else
+    }
+  }
+
   \method openBlock(#1){
     % try to close any open block
     \pgfoothis.closeBlock()
@@ -112,12 +160,22 @@
     {
       % else
     }
+    \ifthenelse{\equal{\pgfoovalueof{columnAmount}}{3}}
+    {
+      \pgfoothis.openBlockThreeColumn(#1)
+    }
+    {
+      % else
+    }
   }
 
   \method updateStateOneColumn(){
     % we only have one column, update all remaining anchors
     \coordinate (left) at (current.south -| left); 
     \coordinate (right) at (current.south -| right); 
+    \coordinate (c3center) at (current.south -| c3center); 
+    \coordinate (c3left) at (current.south -| c3left); 
+    \coordinate (c3right) at (current.south -| c3right); 
   }
 
   \method updateStateTwoColumn(){
@@ -133,8 +191,58 @@
       \pgfooset{currentColumn}{1}
       \coordinate (right) at (current.south -| right); 
     }
+    % update anchors for three column layout
+    \path let
+      \p1 = (c3left),
+      \p2 = (center) 
+      in coordinate (c3left) at (\x1, \y2);
+    \path let
+      \p1 = (c3center),
+      \p2 = (center) 
+      in coordinate (c3center) at (\x1, \y2);
+    \path let
+      \p1 = (c3right),
+      \p2 = (center) 
+      in coordinate (c3right) at (\x1, \y2);
   }
 
+  \method updateStateThreeColumn(){
+    % we have three columns, check which is the current one
+    \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{1}}
+    {
+      % update left anchor and move to next column
+      \coordinate (c3left) at (current.south -| c3left); 
+      \pgfooset{currentColumn}{2}
+    }
+    {
+    % else
+    \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{2}}
+    {
+       % update center anchor and move to next column
+      \coordinate (c3center) at (current.south -| c3center); 
+      \pgfooset{currentColumn}{3}
+    }
+    {
+      % else
+    \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{3}}
+    {
+      % update right anchor and move to first column
+      \coordinate (c3right) at (current.south -| c3right); 
+      \pgfooset{currentColumn}{1}
+    }
+    {
+      % else
+    }}}
+    % update anchors for two column layout
+    \path let
+      \p1 = (left),
+      \p2 = (center) 
+      in coordinate (left) at (\x1, \y2);
+    \path let
+      \p1 = (right),
+      \p2 = (center) 
+      in coordinate (right) at (\x1, \y2);
+  }
 
   \method closeBlock(){
     % only close block if it is open
@@ -163,6 +271,13 @@
       {
         % else
       }
+      \ifthenelse{\equal{\pgfoovalueof{columnAmount}}{3}}
+      {
+        \pgfoothis.updateStateThreeColumn()
+      }
+      {
+        % else
+      }
     }
     {
       % else
@@ -177,6 +292,9 @@
     % set width of block in two column layout
     \pgfmathparse{0.5 * \textwidth - 2 * \pgfoovalueof{blockPadding} - 0.5 * \pgfoovalueof{blockSpacing}} 
     \pgfoolet{twoColumnWidth}{\pgfmathresult}
+    % set width of block in three column layout
+    \pgfmathparse{( \textwidth - 6 * \pgfoovalueof{blockPadding} - 2 * \pgfoovalueof{blockSpacing}) / 3} 
+    \pgfoolet{threeColumnWidth}{\pgfmathresult}
   }
 
   \method setBlockPadding(#1) {
@@ -206,6 +324,18 @@
     % two columns
     \coordinate (left) at  (-.25\textwidth - \pgfoovalueof{blockSpacing} / 4 pt, .54\paperheight);
     \coordinate (right) at ( .25\textwidth + \pgfoovalueof{blockSpacing} / 4 pt, .54\paperheight);
+    % anchors for three column layout
+    \coordinate (c3center) at (0, .54\paperheight);
+    \coordinate (c3left) at
+      ( - 2 * \pgfoovalueof{blockPadding} 
+        - \pgfoovalueof{threeColumnWidth} 
+        - \pgfoovalueof{blockSpacing}
+        - 7pt, .54\paperheight);
+    \coordinate (c3right) at  (
+          2 * \pgfoovalueof{blockPadding}
+        + \pgfoovalueof{threeColumnWidth}
+        + \pgfoovalueof{blockSpacing}
+        + 7pt, .54\paperheight);
   }
 }
 
@@ -298,6 +428,13 @@
   \poster.setColumns(1)
 }
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newenvironment{threecolumnlayout}{
+  \poster.setColumns(3)
+}{
+  \poster.setColumns(1)
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
