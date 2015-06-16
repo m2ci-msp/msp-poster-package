@@ -39,6 +39,12 @@ To have two blocks on each row, use the environment
        ...
     \end{twocolumnlayout}
 
+For three blocks:
+
+    \begin{threecolumnlayout}
+      ...
+    \end{threecolumnlayout}
+
 ## Tweaking the layout
 
 The command
@@ -163,22 +169,42 @@ Example poster file that uses additional packages:
 
     \end{twocolumnlayout}
 
-    \begin{posterblock}
-      \section*{Center Box}
-      \begin{multicols}{3}
-      \lipsum[4]
-      \end{multicols}
-    \end{posterblock}
+    \begin{threecolumnlayout}
+      \begin{posterblock}
+        \begin{center}
+        \begin{tikzpicture}
+          \node [fill=red!70, circle, text width=20pt] {};
+        \end{tikzpicture}
+        \end{center}
+      \end{posterblock}
+
+      \begin{posterblock}
+        \begin{center}
+        \begin{tikzpicture}
+          \node [fill=black!70, circle, text width=30pt] {};
+        \end{tikzpicture}
+        \end{center}
+      \end{posterblock}
+
+      \begin{posterblock}
+        \begin{center}
+        \begin{tikzpicture}
+          \node [fill=blue!70, circle, text width=40pt] {};
+        \end{tikzpicture}
+        \end{center}
+      \end{posterblock}
+
+    \end{threecolumnlayout}
 
     \begin{twocolumnlayout}
       \begin{posterblock}
         \section*{Left Box}
-        \lipsum[4]
+        \lipsum[7]
       \end{posterblock}
 
       \begin{posterblock}
         \section*{Right Box}
-        \lipsum[2]
+        \lipsum[10]
       \end{posterblock}
     \end{twocolumnlayout}
 
