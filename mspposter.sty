@@ -39,68 +39,106 @@
 \pgfooclass{poster}{
 
   \method poster() {
+    \pgfooset{columnAmount}{1}
   }
 
   % ATTRIBUTES
 
-  \attribute cellSpacing = 20;
-  \attribute cellOpen = false;
+  \attribute blockSpacing = 20;
+  \attribute blockOpen = false;
   \attribute columnAmount = 1;
   \attribute currentColumn = 1;
-  \attribute cellWidth = \textwidth;
+  \attribute blockWidth = \textwidth;
   \attribute oneColumnWidth = \textwidth; 
   \attribute twoColumnWidth = \textwidth; 
-  \attribute cellPadding = 10;
+  \attribute blockPadding = 10;
 
   % METHODS
 
-  \method openCell(#1){
-    % try to close any open cell
-    \pgfoothis.closeCell()
-    % set flag to true
-    \pgfooset{cellOpen}{true}
-    % 
-    \ifthenelse{\equal{\pgfoovalueof{columnAmount}}{2}}
+  \method openBlockOneColumn(#1){
+    \currentWidth = \pgfoovalueof{oneColumnWidth} pt
+    \node [
+      below=\pgfoovalueof{blockSpacing}pt of center,
+      #1,
+      text width=\currentWidth,
+      inner sep=\pgfoovalueof{blockPadding},
+      anchor=north]
+      (current)
+      \bgroup 
+  }
+
+  \method openBlockTwoColumn(#1){
+    \currentWidth = \pgfoovalueof{twoColumnWidth} pt
+    \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{1}}
     {
-      \currentWidth = \pgfoovalueof{twoColumnWidth} pt
-      \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{1}}
-      {
-        \node [
-          below=\pgfoovalueof{cellSpacing}pt of left,
-          #1,
-          text width=\currentWidth,
-          inner sep=\pgfoovalueof{cellPadding},
-          anchor=north]
-          (current)
-        \bgroup 
-      }
-      {
-        \node [
-          below=\pgfoovalueof{cellSpacing}pt of right,
-          #1,
-          text width=\currentWidth,
-          inner sep=\pgfoovalueof{cellPadding},
-          anchor=north]
-          (current)
-        \bgroup 
-      }
-    }
-    {
-      \currentWidth = \pgfoovalueof{oneColumnWidth} pt
       \node [
-        below=\pgfoovalueof{cellSpacing}pt of center,
+        below=\pgfoovalueof{blockSpacing}pt of left,
         #1,
         text width=\currentWidth,
-        inner sep=\pgfoovalueof{cellPadding},
+        inner sep=\pgfoovalueof{blockPadding},
         anchor=north]
         (current)
-        \bgroup 
+      \bgroup 
+    }
+    {
+      \node [
+        below=\pgfoovalueof{blockSpacing}pt of right,
+        #1,
+        text width=\currentWidth,
+        inner sep=\pgfoovalueof{blockPadding},
+        anchor=north]
+        (current)
+      \bgroup 
     }
   }
 
-  \method closeCell(){
-    % only close cell if it is open
-    \ifthenelse{\equal{\pgfoovalueof{cellOpen}}{true}}
+  \method openBlock(#1){
+    % try to close any open block
+    \pgfoothis.closeBlock()
+    % set flag to true
+    \pgfooset{blockOpen}{true}
+    % 
+    \ifthenelse{\equal{\pgfoovalueof{columnAmount}}{1}}
+    {
+      \pgfoothis.openBlockOneColumn(#1)
+    }
+    {
+      % else
+    }
+    \ifthenelse{\equal{\pgfoovalueof{columnAmount}}{2}}
+    {
+      \pgfoothis.openBlockTwoColumn(#1)
+    }
+    {
+      % else
+    }
+  }
+
+  \method updateStateOneColumn(){
+    % we only have one column, update all remaining anchors
+    \coordinate (left) at (current.south -| left); 
+    \coordinate (right) at (current.south -| right); 
+  }
+
+  \method updateStateTwoColumn(){
+    % we have two columns, check which is the current one
+    \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{1}}
+    {
+      % update left anchor and move to next column
+      \coordinate (left) at (current.south -| left); 
+      \pgfooset{currentColumn}{2}
+    }
+    {
+      % update right anchor and move to first column
+      \pgfooset{currentColumn}{1}
+      \coordinate (right) at (current.south -| right); 
+    }
+  }
+
+
+  \method closeBlock(){
+    % only close block if it is open
+    \ifthenelse{\equal{\pgfoovalueof{blockOpen}}{true}}
     {
       \egroup;
       % use path intersections to update coordinates
@@ -110,57 +148,51 @@
         \p2 = (current.south) 
         in \ifdim \y2 < \y1 coordinate (center) at (\x1, \y2)\fi;
       % set flag to false
-      \pgfooset{cellOpen}{false}
+      \pgfooset{blockOpen}{false}
       % update anchors and select next column
-      \ifthenelse{\equal{\pgfoovalueof{columnAmount}}{2}}
-      {
-        % we have two columns, check which is the current one
-        \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{1}}
-        {
-          % update left anchor and move to next column
-          \coordinate (left) at (current.south -| left); 
-          \pgfooset{currentColumn}{2}
-        }
-        {
-          % update right anchor and move to first column
-          \pgfooset{currentColumn}{1}
-          \coordinate (right) at (current.south -| right); 
-        }
+      \ifthenelse{\equal{\pgfoovalueof{columnAmount}}{1}}{
+        \pgfoothis.updateStateOneColumn()
       }
       {
-        % we only have one column, update left and right anchor
-        \coordinate (left) at (current.south -| left); 
-        \coordinate (right) at (current.south -| right); 
+        % else
+      }
+      \ifthenelse{\equal{\pgfoovalueof{columnAmount}}{2}}
+      {
+        \pgfoothis.updateStateTwoColumn()
+      }
+      {
+        % else
       }
     }
     {
+      % else
     }
   }
 
   \method updateLayout() {
     \pgfoothis.setupAnchors()
-    % set width of cell in one column layout
-    \pgfmathparse{ \textwidth - 2 * \pgfoovalueof{cellPadding}} 
+    % set width of block in one column layout
+    \pgfmathparse{ \textwidth - 2 * \pgfoovalueof{blockPadding}} 
     \pgfoolet{oneColumnWidth}{\pgfmathresult}
-    % set width of cell in two column layout
-    \pgfmathparse{0.5 * \textwidth - 2 * \pgfoovalueof{cellPadding} - 0.5 * \pgfoovalueof{cellSpacing}} 
+    % set width of block in two column layout
+    \pgfmathparse{0.5 * \textwidth - 2 * \pgfoovalueof{blockPadding} - 0.5 * \pgfoovalueof{blockSpacing}} 
     \pgfoolet{twoColumnWidth}{\pgfmathresult}
   }
 
   \method setBlockPadding(#1) {
-    \pgfooset{cellPadding}{#1}
+    \pgfooset{blockPadding}{#1}
     \pgfoothis.updateLayout()
   }
 
   \method setBlockSpacing(#1) {
-    \pgfooset{cellSpacing}{#1}
+    \pgfooset{blockSpacing}{#1}
     \pgfoothis.updateLayout()
     }
 
   % set amount of columns
   \method setColumns(#1) {
-    % try to close any open cell
-    \pgfoothis.closeCell()
+    % try to close any open block
+    \pgfoothis.closeBlock()
     % set column amount 
     \pgfooset{columnAmount}{#1}
     % return to first column after change
@@ -172,8 +204,8 @@
     \coordinate (center) at (0, .54\paperheight);
     % align both anchors to create the wanted spacing between
     % two columns
-    \coordinate (left) at  (-.25\textwidth - \pgfoovalueof{cellSpacing} / 4 pt, .54\paperheight);
-    \coordinate (right) at ( .25\textwidth + \pgfoovalueof{cellSpacing} / 4 pt, .54\paperheight);
+    \coordinate (left) at  (-.25\textwidth - \pgfoovalueof{blockSpacing} / 4 pt, .54\paperheight);
+    \coordinate (right) at ( .25\textwidth + \pgfoovalueof{blockSpacing} / 4 pt, .54\paperheight);
   }
 }
 
@@ -222,7 +254,7 @@
 }
 
 \AtEndDocument {%
-  \poster.closeCell()
+  \poster.closeBlock()
 
   \end{tikzpicture}
   \vfill
@@ -270,10 +302,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newenvironment{posterblock}[1][box]{
-  \poster.openCell(#1)
+  \poster.openBlock(#1)
 }
 {
-  \poster.closeCell()
+  \poster.closeBlock()
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
