@@ -34,6 +34,7 @@
 % workaround for undefined control sequence error when 
 % using tikzpicture inside a node
 \newdimen\currentWidth
+\newdimen\currentPadding
 
 % class for poster
 \pgfooclass{poster}{
@@ -59,11 +60,12 @@
 
   \method openBlockOneColumn(#1){
     \currentWidth = \pgfoovalueof{oneColumnWidth} pt
+    \currentPadding = \pgfoovalueof{blockPadding} pt
     \node [
       below=\pgfoovalueof{blockSpacing}pt of center,
       #1,
       text width=\currentWidth,
-      inner sep=\pgfoovalueof{blockPadding},
+      inner sep=\currentPadding,
       anchor=north]
       (current)
       \bgroup 
@@ -71,13 +73,14 @@
 
   \method openBlockTwoColumn(#1){
     \currentWidth = \pgfoovalueof{twoColumnWidth} pt
+    \currentPadding = \pgfoovalueof{blockPadding} pt
     \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{1}}
     {
       \node [
         below=\pgfoovalueof{blockSpacing}pt of left,
         #1,
         text width=\currentWidth,
-        inner sep=\pgfoovalueof{blockPadding},
+        inner sep=\currentPadding,
         anchor=north]
         (current)
       \bgroup 
@@ -87,7 +90,7 @@
         below=\pgfoovalueof{blockSpacing}pt of right,
         #1,
         text width=\currentWidth,
-        inner sep=\pgfoovalueof{blockPadding},
+        inner sep=\currentPadding,
         anchor=north]
         (current)
       \bgroup 
@@ -96,13 +99,14 @@
 
   \method openBlockThreeColumn(#1){
     \currentWidth = \pgfoovalueof{threeColumnWidth} pt
+    \currentPadding = \pgfoovalueof{blockPadding} pt
     \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{1}}
     {
       \node [
         below=\pgfoovalueof{blockSpacing}pt of c3left,
         #1,
         text width=\currentWidth,
-        inner sep=\pgfoovalueof{blockPadding},
+        inner sep=\currentPadding,
         anchor=north]
         (current)
       \bgroup 
@@ -116,7 +120,7 @@
         below=\pgfoovalueof{blockSpacing}pt of c3center,
         #1,
         text width=\currentWidth,
-        inner sep=\pgfoovalueof{blockPadding},
+        inner sep=\currentPadding,
         anchor=north]
         (current)
       \bgroup 
@@ -130,7 +134,7 @@
         below=\pgfoovalueof{blockSpacing}pt of c3right,
         #1,
         text width=\currentWidth,
-        inner sep=\pgfoovalueof{blockPadding},
+        inner sep=\currentPadding,
         anchor=north]
         (current)
       \bgroup 
