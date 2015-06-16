@@ -379,9 +379,8 @@
         ultra thick,
         decoration=random steps,
         decorate,
-        anchor=north,
-        inner sep=15,
-        minimum height=10pt
+        anchor=south,
+        inner sep=10
       }
   ]
 
@@ -464,10 +463,10 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\newenvironment{logobox}[1][80pt]{
+\newenvironment{logobox}{
   \begin{scope}[on background layer]
-    \coordinate (logobox) at (0, -0.5\paperheight + #1);
-    \node at (logobox) [logoboxbg] \bgroup
+    \coordinate (logobox) at (0, -0.5\paperheight);
+    \node [above=of logobox, logoboxbg] \bgroup
 }
 {
   \egroup;
