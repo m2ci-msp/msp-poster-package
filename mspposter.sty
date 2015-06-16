@@ -24,7 +24,8 @@
 \usetikzlibrary{
   calc,
   backgrounds,
-  positioning
+  positioning,
+  decorations.pathmorphing
 }
 
 \usepgfmodule{oo}
@@ -369,7 +370,19 @@
       fill=white, anchor=north,
       draw,
       ultra thick,
-      rounded corners}
+      rounded corners},
+      logoboxbg/.style={
+        minimum width=\paperwidth + 10pt,
+        text width=\textwidth,
+        fill=white,
+        draw=black,
+        ultra thick,
+        decoration=random steps,
+        decorate,
+        anchor=north,
+        inner sep=15,
+        minimum height=10pt
+      }
   ]
 
   \poster.updateLayout()
@@ -447,6 +460,18 @@
 }
 {
   \poster.closeBlock()
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newenvironment{logobox}[1][80pt]{
+  \begin{scope}[on background layer]
+    \coordinate (logobox) at (0, -0.5\paperheight + #1);
+    \node at (logobox) [logoboxbg] \bgroup
+}
+{
+  \egroup;
+  \end{scope}
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
