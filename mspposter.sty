@@ -463,10 +463,10 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\newenvironment{logobox}{
+\newenvironment{logobox}[1][logoboxbg]{
   \begin{scope}[on background layer]
     \coordinate (logobox) at (0, -0.5\paperheight);
-    \node [above=of logobox, logoboxbg] \bgroup
+    \node [above=of logobox, #1] \bgroup
 }
 {
   \egroup;

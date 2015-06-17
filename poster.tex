@@ -40,15 +40,28 @@
 \affil[4]{FooBar Research Lab, Other Place}
 \date{}
 
-% create a custom style
+% create custom styles
 \tikzset{
-  title/.style={
+  mytitle/.style={
+    white!20,
     opacity=1.0,
-    fill=orange!30,
+    fill=blue!70,
     anchor=north,
     draw=black,
+    dashed,
     ultra thick,
     rounded corners
+  },
+  mylogobox/.style={
+    minimum width=\paperwidth + 10pt,
+    text width=\textwidth,
+    fill=white,
+    draw=black,
+    ultra thick,
+    decoration=random steps,
+    decorate,
+    anchor=south,
+    inner sep=10
   }
 }
 
@@ -59,7 +72,7 @@
 \setblockspacing{10}
 \shadebackground{red!40}{blue!30}
 
-\begin{posterblock}[title]
+\begin{posterblock}[mytitle]
 \maketitle
 \thispagestyle{empty}
 \end{posterblock}
@@ -108,7 +121,7 @@
 \begin{twocolumnlayout}
   \begin{posterblock}
     \section*{Left Box}
-    \lipsum[7]
+    \lipsum[6]
   \end{posterblock}
 
   \begin{posterblock}
@@ -116,5 +129,16 @@
     \lipsum[10]
   \end{posterblock}
 \end{twocolumnlayout}
+
+\begin{logobox}[mylogobox]
+  \centering
+  \fbox{\huge \bfseries LOGO 1}
+  \hfill
+  \fbox{\huge \bfseries LOGO 2}
+  \hfill
+  \fbox{\huge \bfseries LOGO 3}
+  \hfill
+  \fbox{\huge \bfseries LOGO 4}
+\end{logobox}
 
 \end{document}

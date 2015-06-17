@@ -9,7 +9,7 @@ The package uses [PGF and TikZ] to automatically generate the layout of the post
 
 ## License
 
-The package is licensed under the *The LaTeX Project Public License*.
+The package is licensed under *The LaTeX Project Public License*.
 
 See LICENSE.md and mspposter.sty for more details.
 
@@ -36,14 +36,22 @@ The default layout is using one block on each row.
 To have two blocks on each row, use the environment
 
     \begin{twocolumnlayout}
-       ...
+        ...
     \end{twocolumnlayout}
 
 For three blocks:
 
     \begin{threecolumnlayout}
-      ...
+       ...
     \end{threecolumnlayout}
+
+Use
+
+    \begin{logobox}
+        CONTENT
+    \end{logobox}
+
+to create a logo bar at the bottom of the poster with CONTENT.
 
 ## Tweaking the layout
 
@@ -66,7 +74,7 @@ The background can be changed with
 This creates a color gradient from top to bottom with the chosen colors.
 Both colors should be in a format that is accepted by TikZ.
 
-Finally, the posterblock accepts an optional argument that refers to a user-defined TikZ style for the block:
+Finally, the posterblock and logobox environments accept an optional argument that refers to a user-defined TikZ style for the block:
 
     \tikzset{%
       example/.style={
@@ -82,8 +90,14 @@ Finally, the posterblock accepts an optional argument that refers to a user-defi
     ...
 
     \begin{posterblock}[example]
-      ...
+        ...
     \end{posterblock}
+
+    ...
+
+    \begin{logobox}[example]
+       ...
+    \end{logobox}
 
 ## Example
 
@@ -131,15 +145,28 @@ Example poster file that uses additional packages:
     \affil[4]{FooBar Research Lab, Other Place}
     \date{}
 
-    % create a custom style
+    % create custom styles
     \tikzset{
-      title/.style={
+      mytitle/.style={
+        white!20,
         opacity=1.0,
-        fill=orange!30,
+        fill=blue!70,
         anchor=north,
         draw=black,
+        dashed,
         ultra thick,
         rounded corners
+      },
+      mylogobox/.style={
+        minimum width=\paperwidth + 10pt,
+        text width=\textwidth,
+        fill=white,
+        draw=black,
+        ultra thick,
+        decoration=random steps,
+        decorate,
+        anchor=south,
+        inner sep=10
       }
     }
 
@@ -150,7 +177,7 @@ Example poster file that uses additional packages:
     \setblockspacing{10}
     \shadebackground{red!40}{blue!30}
 
-    \begin{posterblock}[title]
+    \begin{posterblock}[mytitle]
     \maketitle
     \thispagestyle{empty}
     \end{posterblock}
@@ -199,7 +226,7 @@ Example poster file that uses additional packages:
     \begin{twocolumnlayout}
       \begin{posterblock}
         \section*{Left Box}
-        \lipsum[7]
+        \lipsum[6]
       \end{posterblock}
 
       \begin{posterblock}
@@ -207,6 +234,17 @@ Example poster file that uses additional packages:
         \lipsum[10]
       \end{posterblock}
     \end{twocolumnlayout}
+
+    \begin{logobox}[mylogobox]
+      \centering
+      \fbox{\huge \bfseries LOGO 1}
+      \hfill
+      \fbox{\huge \bfseries LOGO 2}
+      \hfill
+      \fbox{\huge \bfseries LOGO 3}
+      \hfill
+      \fbox{\huge \bfseries LOGO 4}
+    \end{logobox}
 
     \end{document}
 
