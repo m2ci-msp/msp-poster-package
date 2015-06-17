@@ -290,16 +290,17 @@
   }
 
   \method updateLayout() {
-    \pgfoothis.setupAnchors()
     % set width of block in one column layout
     \pgfmathparse{ \textwidth - 2 * \pgfoovalueof{blockPadding}} 
     \pgfoolet{oneColumnWidth}{\pgfmathresult}
     % set width of block in two column layout
-    \pgfmathparse{0.5 * \textwidth - 2 * \pgfoovalueof{blockPadding} - 0.5 * \pgfoovalueof{blockSpacing}} 
+    \pgfmathparse{( \textwidth - 4 * \pgfoovalueof{blockPadding} - \pgfoovalueof{blockSpacing}) / 2} 
     \pgfoolet{twoColumnWidth}{\pgfmathresult}
     % set width of block in three column layout
     \pgfmathparse{( \textwidth - 6 * \pgfoovalueof{blockPadding} - 2 * \pgfoovalueof{blockSpacing}) / 3} 
     \pgfoolet{threeColumnWidth}{\pgfmathresult}
+    % setup anchors now, method uses threeColumnWidth
+    \pgfoothis.setupAnchors()
   }
 
   \method setBlockPadding(#1) {
@@ -327,20 +328,28 @@
     \coordinate (center) at (0, .54\paperheight);
     % align both anchors to create the wanted spacing between
     % two columns
-    \coordinate (left) at  (-.25\textwidth - \pgfoovalueof{blockSpacing} / 4 pt, .54\paperheight);
-    \coordinate (right) at ( .25\textwidth + \pgfoovalueof{blockSpacing} / 4 pt, .54\paperheight);
+    \coordinate (left) at  
+      ( - 0.5 * \pgfoovalueof{blockSpacing}
+        - \pgfoovalueof{blockPadding}
+        - 0.5 * \pgfoovalueof{twoColumnWidth}
+        - 0pt, .54\paperheight);
+    \coordinate (right) at 
+    (     0.5 * \pgfoovalueof{blockSpacing}
+        + \pgfoovalueof{blockPadding}
+        + 0.5 * \pgfoovalueof{twoColumnWidth}
+        + 0pt, .54\paperheight);
     % anchors for three column layout
     \coordinate (c3center) at (0, .54\paperheight);
     \coordinate (c3left) at
       ( - 2 * \pgfoovalueof{blockPadding} 
         - \pgfoovalueof{threeColumnWidth} 
         - \pgfoovalueof{blockSpacing}
-        - 7pt, .54\paperheight);
+        - 0pt, .54\paperheight);
     \coordinate (c3right) at  (
           2 * \pgfoovalueof{blockPadding}
         + \pgfoovalueof{threeColumnWidth}
         + \pgfoovalueof{blockSpacing}
-        + 7pt, .54\paperheight);
+        + 0pt, .54\paperheight);
   }
 }
 
