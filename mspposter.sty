@@ -299,7 +299,7 @@
     % set width of block in three column layout
     \pgfmathparse{( \textwidth - 6 * \pgfoovalueof{blockPadding} - 2 * \pgfoovalueof{blockSpacing}) / 3} 
     \pgfoolet{threeColumnWidth}{\pgfmathresult}
-    % setup anchors now, method uses threeColumnWidth
+    % setup anchors now, method uses twoColumnWidth and threeColumnWidth
     \pgfoothis.setupAnchors()
   }
 
