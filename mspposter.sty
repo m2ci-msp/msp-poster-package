@@ -47,6 +47,7 @@
 
   % ATTRIBUTES
 
+  \attribute topMargin = 20;
   \attribute blockSpacing = 20;
   \attribute blockOpen = false;
   \attribute columnAmount = 1;
@@ -323,10 +324,16 @@
     \pgfooset{currentColumn}{1}
   }
 
+  \method setTopMargin(#1) {
+    \pgfooset{topMargin}{#1}
+  }
+
   \method setupAnchors() {
     % initialize the anchors
+    % compute y-coordinate for all anchors,
     % add blockSpacing to each y-coordinate, it is removed by the first block
-    \coordinate (center) at (0, .54\paperheight + \pgfoovalueof{blockSpacing});
+    \pgfmathparse{ 0.54\paperheight + \pgfoovalueof{blockSpacing} - \pgfoovalueof{topMargin}}
+    \coordinate (center) at (0, \pgfmathresult pt);
     % anchors for two column layout
     % align both anchors to create the wanted spacing between
     % two columns
@@ -334,27 +341,35 @@
       ( - 0.5 * \pgfoovalueof{blockSpacing}
         - \pgfoovalueof{blockPadding}
         - 0.5 * \pgfoovalueof{twoColumnWidth}
-        - 0pt, .54\paperheight + \pgfoovalueof{blockSpacing});
+        - 0pt,
+        \pgfmathresult pt
+        );
     \coordinate (right) at 
     (     0.5 * \pgfoovalueof{blockSpacing}
         + \pgfoovalueof{blockPadding}
         + 0.5 * \pgfoovalueof{twoColumnWidth}
-        + 0pt, .54\paperheight + \pgfoovalueof{blockSpacing});
+        + 0pt,
+        \pgfmathresult pt
+        );
     % anchors for three column layout
     % left
     \coordinate (c3left) at
     ( - 2 * \pgfoovalueof{blockPadding} 
       - \pgfoovalueof{threeColumnWidth} 
       - \pgfoovalueof{blockSpacing}
-      - 0pt, .54\paperheight + \pgfoovalueof{blockSpacing});
+      - 0pt,
+      \pgfmathresult pt
+      );
     % center
-    \coordinate (c3center) at (0, .54\paperheight + \pgfoovalueof{blockSpacing});
+    \coordinate (c3center) at (0, \pgfmathresult pt);
     % right
     \coordinate (c3right) at
     (   2 * \pgfoovalueof{blockPadding}
       + \pgfoovalueof{threeColumnWidth}
       + \pgfoovalueof{blockSpacing}
-      + 0pt, .54\paperheight + \pgfoovalueof{blockSpacing});
+      + 0pt,
+      \pgfmathresult pt
+      );
   }
 }
 
@@ -435,6 +450,13 @@
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\settopmargin}[1] {
+  \poster.setTopMargin(#1)
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 \newcommand{\shadebackground}[2] {
 \begin{scope}[on background layer]
