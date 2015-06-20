@@ -325,31 +325,36 @@
 
   \method setupAnchors() {
     % initialize the anchors
-    \coordinate (center) at (0, .54\paperheight);
+    % add blockSpacing to each y-coordinate, it is removed by the first block
+    \coordinate (center) at (0, .54\paperheight + \pgfoovalueof{blockSpacing});
+    % anchors for two column layout
     % align both anchors to create the wanted spacing between
     % two columns
     \coordinate (left) at  
       ( - 0.5 * \pgfoovalueof{blockSpacing}
         - \pgfoovalueof{blockPadding}
         - 0.5 * \pgfoovalueof{twoColumnWidth}
-        - 0pt, .54\paperheight);
+        - 0pt, .54\paperheight + \pgfoovalueof{blockSpacing});
     \coordinate (right) at 
     (     0.5 * \pgfoovalueof{blockSpacing}
         + \pgfoovalueof{blockPadding}
         + 0.5 * \pgfoovalueof{twoColumnWidth}
-        + 0pt, .54\paperheight);
+        + 0pt, .54\paperheight + \pgfoovalueof{blockSpacing});
     % anchors for three column layout
-    \coordinate (c3center) at (0, .54\paperheight);
+    % left
     \coordinate (c3left) at
-      ( - 2 * \pgfoovalueof{blockPadding} 
-        - \pgfoovalueof{threeColumnWidth} 
-        - \pgfoovalueof{blockSpacing}
-        - 0pt, .54\paperheight);
-    \coordinate (c3right) at  (
-          2 * \pgfoovalueof{blockPadding}
-        + \pgfoovalueof{threeColumnWidth}
-        + \pgfoovalueof{blockSpacing}
-        + 0pt, .54\paperheight);
+    ( - 2 * \pgfoovalueof{blockPadding} 
+      - \pgfoovalueof{threeColumnWidth} 
+      - \pgfoovalueof{blockSpacing}
+      - 0pt, .54\paperheight + \pgfoovalueof{blockSpacing});
+    % center
+    \coordinate (c3center) at (0, .54\paperheight + \pgfoovalueof{blockSpacing});
+    % right
+    \coordinate (c3right) at
+    (   2 * \pgfoovalueof{blockPadding}
+      + \pgfoovalueof{threeColumnWidth}
+      + \pgfoovalueof{blockSpacing}
+      + 0pt, .54\paperheight + \pgfoovalueof{blockSpacing});
   }
 }
 
