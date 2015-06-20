@@ -440,6 +440,16 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\newcommand{\setbackground}[1] {
+  \begin{scope}[on background layer]
+    \node[anchor=north] at (upper) {
+      #1
+    };
+  \end{scope}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \newenvironment{onecolumnlayout}{
   \poster.setColumns(1)
 }{
