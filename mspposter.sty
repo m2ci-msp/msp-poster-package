@@ -326,6 +326,7 @@
 
   \method setTopMargin(#1) {
     \pgfooset{topMargin}{#1}
+    \pgfoothis.updateLayout()
   }
 
   \method setupAnchors() {
