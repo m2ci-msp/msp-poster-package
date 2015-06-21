@@ -113,9 +113,9 @@
         (current)
       \bgroup 
     }
-    {
+    {%
       % else
-    }
+    }%
     \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{2}}
     {
       \node [
@@ -127,9 +127,9 @@
         (current)
       \bgroup 
     }
-    {
+    {%
       % else
-    }
+    }%
     \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{3}}
     {
       \node [
@@ -141,12 +141,12 @@
         (current)
       \bgroup 
     }
-    {
+    {%
       % else
-    }
+    }%
   }
 
-  \method openBlock(#1){
+  \method openBlock(#1){%
     % try to close any open block
     \pgfoothis.closeBlock()
     % set flag to true
@@ -154,25 +154,25 @@
     % 
     \ifthenelse{\equal{\pgfoovalueof{columnAmount}}{1}}
     {
-      \pgfoothis.openBlockOneColumn(#1)
+      \pgfoothis.openBlockOneColumn(#1)%
     }
-    {
+    {%
       % else
-    }
+    }%
     \ifthenelse{\equal{\pgfoovalueof{columnAmount}}{2}}
     {
-      \pgfoothis.openBlockTwoColumn(#1)
+      \pgfoothis.openBlockTwoColumn(#1)%
     }
-    {
+    {%
       % else
-    }
+    }%
     \ifthenelse{\equal{\pgfoovalueof{columnAmount}}{3}}
     {
-      \pgfoothis.openBlockThreeColumn(#1)
+      \pgfoothis.openBlockThreeColumn(#1)%
     }
-    {
+    {%
       % else
-    }
+    }%
   }
 
   \method updateStateOneColumn(){
@@ -502,7 +502,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newenvironment{posterblock}[1][box]{
-  \poster.openBlock(#1)
+  \poster.openBlock(#1)%
 }
 {
   \poster.closeBlock()
