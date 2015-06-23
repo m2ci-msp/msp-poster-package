@@ -393,14 +393,18 @@
   \vfill
   \hfil
   \begin{tikzpicture}[overlay,
-    % style for boxes
-    box/.style={
-      opacity=0.5,
-      text opacity=1.0,
-      fill=white, anchor=north,
-      draw,
-      ultra thick,
-      rounded corners},
+      every node/.style={
+        outer sep=0
+      },
+      % style for boxes
+      box/.style={
+        opacity=0.5,
+        text opacity=1.0,
+        fill=white,
+        draw,
+        ultra thick,
+        rounded corners
+      },
       logoboxbg/.style={
         align=center,
         minimum width=\paperwidth + 10pt,
@@ -410,7 +414,6 @@
         ultra thick,
         decoration=random steps,
         decorate,
-        anchor=south,
         inner sep=10
       }
   ]
