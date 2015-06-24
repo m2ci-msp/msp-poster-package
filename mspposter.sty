@@ -54,6 +54,7 @@
   \attribute oneColumnWidth=\textwidth; 
   \attribute twoColumnWidth=\textwidth; 
   \attribute threeColumnWidth=\textwidth; 
+  \attribute fourColumnWidth=\textwidth; 
   \attribute blockPadding=10;
 
   % METHODS
@@ -183,11 +184,18 @@
 
   \method updateStateOneColumn(){
     % we only have one column, update all remaining anchors
+    % two column
     \coordinate (left) at (current.south -| left); 
     \coordinate (right) at (current.south -| right); 
+    % three column
     \coordinate (c3center) at (current.south -| c3center); 
     \coordinate (c3left) at (current.south -| c3left); 
     \coordinate (c3right) at (current.south -| c3right); 
+    % four column
+    \coordinate (c4left) at (current.south -| c4left); 
+    \coordinate (c4halfleft) at (current.south -| c4halfleft); 
+    \coordinate (c4halfright) at (current.south -| c4halfright); 
+    \coordinate (c4right) at (current.south -| c4right); 
   }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -324,7 +332,17 @@
       ) / 3
     } 
     \pgfoolet{threeColumnWidth}{\pgfmathresult}
-    % setup anchors now, method uses twoColumnWidth and threeColumnWidth
+    % set width of block in four column layout
+    \pgfmathparse{ (
+          \textwidth
+        - 8 * \pgfoovalueof{blockPadding}
+        - 3 * \pgfoovalueof{blockSpacing}
+      ) / 4
+    } 
+    \pgfoolet{fourColumnWidth}{\pgfmathresult}
+
+    % setup anchors now, method uses twoColumnWidth, threeColumnWidth, and
+    % fourColumnWidth
     \pgfoothis.setupAnchors()
   }
 
