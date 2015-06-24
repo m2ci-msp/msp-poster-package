@@ -99,7 +99,6 @@
       \bgroup 
     }
   }
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   \method openBlockThreeColumn(#1){
@@ -151,6 +150,70 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+  \method openBlockFourColumn(#1){
+    \currentWidth = \pgfoovalueof{fourColumnWidth} pt
+    \currentPadding = \pgfoovalueof{blockPadding} pt
+    \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{1}}
+    {
+      \node [
+        below=\pgfoovalueof{blockSpacing}pt of c4left,
+        #1,
+        text width=\currentWidth,
+        inner sep=\currentPadding,
+        anchor=north]
+        (current)
+      \bgroup 
+    }
+    {%
+      % else
+    }%
+    \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{2}}
+    {
+      \node [
+        below=\pgfoovalueof{blockSpacing}pt of c4halfleft,
+        #1,
+        text width=\currentWidth,
+        inner sep=\currentPadding,
+        anchor=north]
+        (current)
+      \bgroup 
+    }
+    {%
+      % else
+    }%
+    \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{3}}
+    {
+      \node [
+        below=\pgfoovalueof{blockSpacing}pt of c4halfright,
+        #1,
+        text width=\currentWidth,
+        inner sep=\currentPadding,
+        anchor=north]
+        (current)
+      \bgroup 
+    }
+    {%
+      % else
+    }%
+    \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{4}}
+    {
+      \node [
+        below=\pgfoovalueof{blockSpacing}pt of c4right,
+        #1,
+        text width=\currentWidth,
+        inner sep=\currentPadding,
+        anchor=north]
+        (current)
+      \bgroup 
+    }
+    {%
+      % else
+    }%
+  }
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
   \method openBlock(#1){%
     % try to close any open block
     \pgfoothis.closeBlock()
@@ -174,6 +237,13 @@
     \ifthenelse{\equal{\pgfoovalueof{columnAmount}}{3}}
     {
       \pgfoothis.openBlockThreeColumn(#1)%
+    }
+    {%
+      % else
+    }%
+    \ifthenelse{\equal{\pgfoovalueof{columnAmount}}{4}}
+    {
+      \pgfoothis.openBlockFourColumn(#1)%
     }
     {%
       % else
@@ -226,6 +296,23 @@
       \p1 = (c3right),
       \p2 = (center) 
       in coordinate (c3right) at (\x1, \y2);
+    % update anchors for four column layout
+    \path let
+      \p1 = (c4left),
+      \p2 = (center) 
+      in coordinate (c4left) at (\x1, \y2);
+    \path let
+      \p1 = (c4halfleft),
+      \p2 = (center) 
+      in coordinate (c4halfleft) at (\x1, \y2);
+    \path let
+      \p1 = (c4halfright),
+      \p2 = (center) 
+      in coordinate (c4halfright) at (\x1, \y2);
+    \path let
+      \p1 = (c4right),
+      \p2 = (center) 
+      in coordinate (c4right) at (\x1, \y2);
   }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -266,9 +353,88 @@
       \p1 = (right),
       \p2 = (center) 
       in coordinate (right) at (\x1, \y2);
+    % update anchors for four column layout
+    \path let
+      \p1 = (c4left),
+      \p2 = (center) 
+      in coordinate (c4left) at (\x1, \y2);
+    \path let
+      \p1 = (c4halfleft),
+      \p2 = (center) 
+      in coordinate (c4halfleft) at (\x1, \y2);
+    \path let
+      \p1 = (c4halfright),
+      \p2 = (center) 
+      in coordinate (c4halfright) at (\x1, \y2);
+    \path let
+      \p1 = (c4right),
+      \p2 = (center) 
+      in coordinate (c4right) at (\x1, \y2);
   }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  \method updateStateFourColumn(){
+    % we have three columns, check which is the current one
+    \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{1}}
+    {
+      % update left anchor and move to next column
+      \coordinate (c4left) at (current.south -| c4left); 
+      \pgfooset{currentColumn}{2}
+    }
+    {
+    % else
+    \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{2}}
+    {
+       % update center anchor and move to next column
+      \coordinate (c4halfleft) at (current.south -| c4halfleft); 
+      \pgfooset{currentColumn}{3}
+    }
+    {
+      % else
+    \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{3}}
+    {
+      % update right anchor and move to first column
+      \coordinate (c4halfright) at (current.south -| c4halfright); 
+      \pgfooset{currentColumn}{4}
+    }
+    {
+      % else
+    \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{4}}
+    {
+      % update right anchor and move to first column
+      \coordinate (c4right) at (current.south -| c4right); 
+      \pgfooset{currentColumn}{1}
+    }
+    {
+      % else
+    }}}}
+    % update anchors for two column layout
+    \path let
+      \p1 = (left),
+      \p2 = (center) 
+      in coordinate (left) at (\x1, \y2);
+    \path let
+      \p1 = (right),
+      \p2 = (center) 
+      in coordinate (right) at (\x1, \y2);
+    % update anchors for three column layout
+    \path let
+      \p1 = (c3left),
+      \p2 = (center) 
+      in coordinate (c3left) at (\x1, \y2);
+    \path let
+      \p1 = (c3center),
+      \p2 = (center) 
+      in coordinate (c3center) at (\x1, \y2);
+    \path let
+      \p1 = (c3right),
+      \p2 = (center) 
+      in coordinate (c3right) at (\x1, \y2);
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
   \method closeBlock(){
     % only close block if it is open
@@ -300,6 +466,13 @@
       \ifthenelse{\equal{\pgfoovalueof{columnAmount}}{3}}
       {
         \pgfoothis.updateStateThreeColumn()
+      }
+      {
+        % else
+      }
+      \ifthenelse{\equal{\pgfoovalueof{columnAmount}}{4}}
+      {
+        \pgfoothis.updateStateFourColumn()
       }
       {
         % else
@@ -340,7 +513,6 @@
       ) / 4
     } 
     \pgfoolet{fourColumnWidth}{\pgfmathresult}
-
     % setup anchors now, method uses twoColumnWidth, threeColumnWidth, and
     % fourColumnWidth
     \pgfoothis.setupAnchors()
@@ -420,6 +592,39 @@
     (   2 * \pgfoovalueof{blockPadding}
       + \pgfoovalueof{threeColumnWidth}
       + \pgfoovalueof{blockSpacing}
+      + 0pt,
+      \pgfmathresult pt
+      );
+    % anchors for four column layout
+    % left
+    \coordinate (c4left) at
+    ( - 3   * \pgfoovalueof{blockPadding} 
+      - 1.5 * \pgfoovalueof{fourColumnWidth} 
+      - 1.5   * \pgfoovalueof{blockSpacing}
+      - 0pt,
+      \pgfmathresult pt
+      );
+    % half left
+    \coordinate (c4halfleft) at
+    ( - 1   * \pgfoovalueof{blockPadding} 
+      - 0.5 * \pgfoovalueof{fourColumnWidth} 
+      - 0.5   * \pgfoovalueof{blockSpacing}
+      - 0pt,
+      \pgfmathresult pt
+      );
+    % half right
+    \coordinate (c4halfright) at
+    (   1   * \pgfoovalueof{blockPadding} 
+      + 0.5 * \pgfoovalueof{fourColumnWidth} 
+      + 0.5   * \pgfoovalueof{blockSpacing}
+      + 0pt,
+      \pgfmathresult pt
+      );
+    % right
+    \coordinate (c4right) at
+    (   3   * \pgfoovalueof{blockPadding} 
+      + 1.5 * \pgfoovalueof{fourColumnWidth} 
+      + 1.5   * \pgfoovalueof{blockSpacing}
       + 0pt,
       \pgfmathresult pt
       );
@@ -551,6 +756,14 @@
 
 \newenvironment{threecolumnlayout}{
   \poster.setColumns(3)
+}{
+  \poster.setColumns(1)
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newenvironment{postercolumns}[1][1]{
+  \poster.setColumns(#1)
 }{
   \poster.setColumns(1)
 }
