@@ -67,6 +67,14 @@ Use
 
 to change the spacing between two blocks to Y.
 
+Change the margin to the top boundary of the page with
+
+    \settopmargin(Z)
+
+to Z.
+
+**Important: All provided values have to be dimensionless - they are interpreted in terms of pt.**
+
 The background can be changed with
 
     \shadebackground{bottomColor}{topColor}
@@ -74,12 +82,21 @@ The background can be changed with
 This creates a color gradient from top to bottom with the chosen colors.
 Both colors should be in a format that is accepted by TikZ.
 
+To place content on the background, use
+
+    \setbackground{CONTENT}
+
 Finally, the posterblock and logobox environments accept an optional argument that refers to a user-defined TikZ style for the block:
 
     \tikzset{%
-      example/.style={
+      myblock/.style={
         draw,
         fill=blue
+      },
+      mylogobox/.style={
+        draw,
+        anchor=south,
+        fill=white
       }
     }
 
@@ -89,19 +106,37 @@ Finally, the posterblock and logobox environments accept an optional argument th
 
     ...
 
-    \begin{posterblock}[example]
+    \begin{posterblock}[myblock]
         ...
     \end{posterblock}
 
     ...
 
-    \begin{logobox}[example]
+    \begin{logobox}[mylogobox]
        ...
     \end{logobox}
+
+**Important: Use anchor=south in your style for the logobox environment.**
+
+## Limitations
+
+- Floating environments like *figure* and *table* are not supported inside a poster block.
+
+- TikZ pictures inside a poster block inherit the chosen style for the block.
+  This issue is related to TikZ, see for example [TeX Stackexchange]. 
+
+  Workarounds:
+
+  1. Like proposed on [TeX Stackexchange], typeset the TikZ picture in a *savebox* and use it later on.
+  2. Create a PDF of the TikZ picture and use *\includegraphics* in the posterblock environment.
+
+
 
 ## Example
 
 Example poster file that uses additional packages:
+
+Resulting poster:
 
     \documentclass[a4paper, 11pt]{article}
     \usepackage{mspposter}
@@ -173,6 +208,7 @@ Example poster file that uses additional packages:
     \begin{document}
 
     % tweak layout
+    \settopmargin{10}
     \setblockpadding{20}
     \setblockspacing{10}
     \shadebackground{red!40}{blue!30}
@@ -254,4 +290,5 @@ Resulting poster:
 
 
 [PGF and TikZ]: http://sourceforge.net/projects/pgf/ "PGF and TikZ"
+[TeX Stackexchange]: http://tex.stackexchange.com/questions/23411/tikzpicture-in-node-of-another-tikzpicture-how-to-screen-of-from-inheriting-sty "TeX Stackexchange"
 [Example]: poster.jpg
