@@ -41,22 +41,20 @@
 \pgfooclass{poster}{
 
   \method poster() {
-    \pgfooset{columnAmount}{1}
-    \pgfooset{currentColumn}{1}
   }
 
   % ATTRIBUTES
 
-  \attribute topMargin = 20;
-  \attribute blockSpacing = 20;
-  \attribute blockOpen = false;
-  \attribute columnAmount = 1;
-  \attribute currentColumn = 1;
-  \attribute blockWidth = \textwidth;
-  \attribute oneColumnWidth = \textwidth; 
-  \attribute twoColumnWidth = \textwidth; 
-  \attribute threeColumnWidth = \textwidth; 
-  \attribute blockPadding = 10;
+  \attribute topMargin=20;
+  \attribute blockSpacing=20;
+  \attribute blockOpen=false;
+  \attribute columnAmount=1;
+  \attribute currentColumn=1;
+  \attribute blockWidth=\textwidth;
+  \attribute oneColumnWidth=\textwidth; 
+  \attribute twoColumnWidth=\textwidth; 
+  \attribute threeColumnWidth=\textwidth; 
+  \attribute blockPadding=10;
 
   % METHODS
 
@@ -72,6 +70,8 @@
       (current)
       \bgroup 
   }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   \method openBlockTwoColumn(#1){
     \currentWidth = \pgfoovalueof{twoColumnWidth} pt
@@ -98,6 +98,8 @@
       \bgroup 
     }
   }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   \method openBlockThreeColumn(#1){
     \currentWidth = \pgfoovalueof{threeColumnWidth} pt
@@ -146,6 +148,8 @@
     }%
   }
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
   \method openBlock(#1){%
     % try to close any open block
     \pgfoothis.closeBlock()
@@ -175,6 +179,8 @@
     }%
   }
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
   \method updateStateOneColumn(){
     % we only have one column, update all remaining anchors
     \coordinate (left) at (current.south -| left); 
@@ -183,6 +189,8 @@
     \coordinate (c3left) at (current.south -| c3left); 
     \coordinate (c3right) at (current.south -| c3right); 
   }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   \method updateStateTwoColumn(){
     % we have two columns, check which is the current one
@@ -211,6 +219,8 @@
       \p2 = (center) 
       in coordinate (c3right) at (\x1, \y2);
   }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   \method updateStateThreeColumn(){
     % we have three columns, check which is the current one
@@ -249,6 +259,8 @@
       \p2 = (center) 
       in coordinate (right) at (\x1, \y2);
   }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   \method closeBlock(){
     % only close block if it is open
@@ -290,29 +302,47 @@
     }
   }
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
   \method updateLayout() {
     % set width of block in one column layout
     \pgfmathparse{ \textwidth - 2 * \pgfoovalueof{blockPadding}} 
     \pgfoolet{oneColumnWidth}{\pgfmathresult}
     % set width of block in two column layout
-    \pgfmathparse{( \textwidth - 4 * \pgfoovalueof{blockPadding} - \pgfoovalueof{blockSpacing}) / 2} 
+    \pgfmathparse{ (
+          \textwidth
+        - 4 * \pgfoovalueof{blockPadding}
+        - \pgfoovalueof{blockSpacing}
+      ) / 2
+    } 
     \pgfoolet{twoColumnWidth}{\pgfmathresult}
     % set width of block in three column layout
-    \pgfmathparse{( \textwidth - 6 * \pgfoovalueof{blockPadding} - 2 * \pgfoovalueof{blockSpacing}) / 3} 
+    \pgfmathparse{ (
+          \textwidth
+        - 6 * \pgfoovalueof{blockPadding}
+        - 2 * \pgfoovalueof{blockSpacing}
+      ) / 3
+    } 
     \pgfoolet{threeColumnWidth}{\pgfmathresult}
     % setup anchors now, method uses twoColumnWidth and threeColumnWidth
     \pgfoothis.setupAnchors()
   }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   \method setBlockPadding(#1) {
     \pgfooset{blockPadding}{#1}
     \pgfoothis.updateLayout()
   }
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
   \method setBlockSpacing(#1) {
     \pgfooset{blockSpacing}{#1}
     \pgfoothis.updateLayout()
     }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   % set amount of columns
   \method setColumns(#1) {
@@ -324,10 +354,14 @@
     \pgfooset{currentColumn}{1}
   }
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
   \method setTopMargin(#1) {
     \pgfooset{topMargin}{#1}
     \pgfoothis.updateLayout()
   }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   \method setupAnchors() {
     % initialize the anchors
