@@ -124,7 +124,9 @@ Finally, the posterblock and logobox environments accept an optional argument th
 
 - TikZ pictures inside a poster block inherit the chosen style for the block.
   This issue is related to TikZ, see for example [TeX Stackexchange]. 
+
   Workarounds:
+
   1. Like proposed on [TeX Stackexchange], typeset the TikZ picture in a *savebox* and use it later on.
   2. Create a PDF of the TikZ picture and use *\includegraphics* in the posterblock environment.
 
