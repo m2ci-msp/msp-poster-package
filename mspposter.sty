@@ -439,7 +439,7 @@
   \method closeBlock(){
     % only close block if it is open
     \ifthenelse{\equal{\pgfoovalueof{blockOpen}}{true}}
-    {
+    {%
       \egroup;
       % use path intersections to update coordinates
       % only update center if y value is smaller
@@ -750,7 +750,7 @@
 \newenvironment{posterblock}[1][box]{
   \poster.openBlock(#1)%
 }
-{
+{%
   \poster.closeBlock()
 }
 
