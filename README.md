@@ -33,17 +33,13 @@ to create a block on the poster with CONTENT.
 The blocks themselves are arranged automatically on the poster depending on the chosen layout.
 The default layout is using one block on each row. 
 
-To have two blocks on each row, use the environment
+To have more columns, use the environment
 
-    \begin{twocolumnlayout}
-        ...
-    \end{twocolumnlayout}
+    \begin{postercolumns}[N]
+      ...
+    \end{postercolumns}
 
-For three blocks:
-
-    \begin{threecolumnlayout}
-       ...
-    \end{threecolumnlayout}
+where N is the desired number of columns. Currently up to 4 columns are supported.
 
 Use
 
@@ -140,17 +136,12 @@ Resulting poster:
 
     \documentclass[a4paper, 11pt]{article}
     \usepackage{mspposter}
-    \usepackage{multicol}
 
     \usepackage{lipsum}
     \usepackage{calc}
-    \usepackage{microtype}
     \usepackage[utf8]{inputenc}
     \usepackage[T1]{fontenc}
-    \usepackage{setspace}
-    \usepackage{calc}
     \usepackage[compact, center]{titlesec}
-    \usepackage[hidelinks]{hyperref}
     \usepackage{titling}
     \setlength{\droptitle}{-50pt}
     \pretitle{\begin{center}\bf\Large}
@@ -186,11 +177,20 @@ Resulting poster:
         white!20,
         opacity=1.0,
         fill=blue!70,
-        anchor=north,
         draw=black,
         dashed,
         ultra thick,
         rounded corners
+      },
+      mycenter/.style={
+        ultra thick,
+        decoration=random steps,
+        decorate,
+        draw,
+        fill=white,
+        opacity=0.5,
+        text opacity=1.0,
+        align=center
       },
       mylogobox/.style={
         minimum width=\paperwidth + 10pt,
@@ -208,31 +208,45 @@ Resulting poster:
     \begin{document}
 
     % tweak layout
+    % increase width of poster
+    \setlength{\textwidth}{\paperwidth - 30pt}
     \settopmargin{10}
     \setblockpadding{20}
-    \setblockspacing{10}
+    \setblockspacing{15}
     \shadebackground{red!40}{blue!30}
 
     \begin{posterblock}[mytitle]
     \maketitle
+    % this is needed to suppress the generation of a page number
     \thispagestyle{empty}
     \end{posterblock}
 
-    \begin{twocolumnlayout}
+    \begin{postercolumns}[4]
 
-      \begin{posterblock}
-        \section*{Left Box}
-        \lipsum[4]
+      \begin{posterblock}[mycenter]
+        I am a poster block!
+        \par
       \end{posterblock}
 
-      \begin{posterblock}
-        \section*{Right Box}
-        \lipsum[2]
+      \begin{posterblock}[mycenter]
+        I am a poster block!
+        \par
       \end{posterblock}
 
-    \end{twocolumnlayout}
+      \begin{posterblock}[mycenter]
+        I am a poster block!
+        \par
+      \end{posterblock}
 
-    \begin{threecolumnlayout}
+      \begin{posterblock}[mycenter]
+        I am a poster block!
+        \par
+      \end{posterblock}
+
+    \end{postercolumns}
+
+    \begin{postercolumns}[3]
+
       \begin{posterblock}
         \begin{center}
         \begin{tikzpicture}
@@ -257,9 +271,10 @@ Resulting poster:
         \end{center}
       \end{posterblock}
 
-    \end{threecolumnlayout}
+    \end{postercolumns}
 
-    \begin{twocolumnlayout}
+    \begin{postercolumns}[2]
+
       \begin{posterblock}
         \section*{Left Box}
         \lipsum[6]
@@ -269,7 +284,12 @@ Resulting poster:
         \section*{Right Box}
         \lipsum[10]
       \end{posterblock}
-    \end{twocolumnlayout}
+
+    \end{postercolumns}
+
+    \begin{posterblock}
+      \lipsum[1]
+    \end{posterblock}
 
     \begin{logobox}[mylogobox]
       \centering
