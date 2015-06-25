@@ -749,6 +749,8 @@
 
 \newenvironment{posterblock}[1][box]{
   \poster.openBlock(#1)%
+  % ignore leading white space
+  \ignorespaces
 }
 {%
   \poster.closeBlock()
@@ -760,6 +762,8 @@
   \begin{scope}[on background layer]
     \coordinate (logobox) at (0, -0.5\paperheight);
     \node [above=of logobox, #1] \bgroup
+    % ignore leading white space
+    \ignorespaces
 }
 {
   \egroup;
