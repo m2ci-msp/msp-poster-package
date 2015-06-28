@@ -764,7 +764,7 @@
 \newenvironment{logobox}[1][logoboxbg]{
   \begin{scope}[on background layer]
     \coordinate (logobox) at (0, -0.5\paperheight);
-    \node [above=of logobox, #1] \bgroup
+    \node [above=of logobox, #1, anchor=south] \bgroup
     % ignore leading white space
     \ignorespaces
     % place content inside a minipage
