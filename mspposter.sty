@@ -751,8 +751,11 @@
   \poster.openBlock(#1)%
   % ignore leading white space
   \ignorespaces
+  % place content inside a minipage
+  \begin{minipage}{\textwidth}%
 }
 {%
+  \end{minipage}%
   \poster.closeBlock()
 }
 
@@ -764,8 +767,11 @@
     \node [above=of logobox, #1] \bgroup
     % ignore leading white space
     \ignorespaces
+    % place content inside a minipage
+    \begin{minipage}{\textwidth}%
 }
 {%
+  \end{minipage}%
   \egroup;
   \end{scope}
 }
