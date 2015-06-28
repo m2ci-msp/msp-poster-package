@@ -65,8 +65,8 @@
     \node [
       below=\pgfoovalueof{blockSpacing}pt of center,
       text width=\currentWidth,
-      inner sep=\currentPadding,
       #1,
+      inner sep=\currentPadding,
       anchor=north]
       (current)
       \bgroup
@@ -751,8 +751,11 @@
   \poster.openBlock(#1)%
   % ignore leading white space
   \ignorespaces
+  % place content inside a minipage
+  \begin{minipage}{\textwidth}%
 }
 {%
+  \end{minipage}%
   \poster.closeBlock()
 }
 
@@ -761,11 +764,14 @@
 \newenvironment{logobox}[1][logoboxbg]{
   \begin{scope}[on background layer]
     \coordinate (logobox) at (0, -0.5\paperheight);
-    \node [above=of logobox, #1] \bgroup
+    \node [above=of logobox, #1, anchor=south] \bgroup
     % ignore leading white space
     \ignorespaces
+    % place content inside a minipage
+    \begin{minipage}{\textwidth}%
 }
 {%
+  \end{minipage}%
   \egroup;
   \end{scope}
 }
