@@ -20,6 +20,8 @@
 
 \RequirePackage{ifthen}
 \RequirePackage{tikz}
+% remove all margins
+\RequirePackage[hmargin=0pt, vmargin=0pt, bindingoffset=0pt]{geometry}
 
 \usetikzlibrary{
   calc,
@@ -557,7 +559,7 @@
     % initialize the anchors
     % compute y-coordinate for all anchors,
     % add blockSpacing to each y-coordinate, it is removed by the first block
-    \pgfmathparse{ 0.54\paperheight + \pgfoovalueof{blockSpacing} - \pgfoovalueof{topMargin}}
+    \pgfmathparse{ 0.5\paperheight + \pgfoovalueof{blockSpacing} - \pgfoovalueof{topMargin}}
     \coordinate (center) at (0, \pgfmathresult pt);
     % anchors for two column layout
     % align both anchors to create the wanted spacing between
@@ -643,13 +645,16 @@
   \pgfoonew \poster=new poster()
 
   \parindent0pt
-  \null
-  \thispagestyle{empty}
-  % offset a little bit
-  \vskip2cm
-  \vfill
-  \hfil
+  % fill the whole page
+  \begin{tikzpicture}
+    \node[fill=white,
+      anchor=north west,
+      minimum width=\paperwidth,
+      minimum height=\paperheight] {};
+  \end{tikzpicture}%
   \begin{tikzpicture}[overlay,
+      % shift origin of coordinate system
+      shift={(-0.5\paperwidth,0.5\paperheight)},
       every node/.style={
         outer sep=0
       },
@@ -680,8 +685,8 @@
   % for background shading
   \coordinate (bgleft) at (-.5\paperwidth,0);
   \coordinate (bgright) at (0.5\paperwidth,0);
-  \coordinate (bottom) at (0,-.6\paperheight);
-  \coordinate (upper) at (0,.57\paperheight);
+  \coordinate (bottom) at (0,-.5\paperheight);
+  \coordinate (upper) at (0,.5\paperheight);
 
   % background 
   \begin{scope}[on background layer]
@@ -692,11 +697,7 @@
 
 \AtEndDocument {%
   \poster.closeBlock()
-
-  \end{tikzpicture}
-  \vfill
-  \vbox{}
-  \clearpage
+  \end{tikzpicture}%
 } 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -764,7 +765,8 @@
 \newenvironment{logobox}[1][logoboxbg]{
   \begin{scope}[on background layer]
     \coordinate (logobox) at (0, -0.5\paperheight);
-    \node [above=of logobox, #1, anchor=south] \bgroup
+    % shift a little bit, such that the bottom border is not visible
+    \node [#1, above=-4pt of logobox] \bgroup
     % ignore leading white space
     \ignorespaces
     % place content inside a minipage

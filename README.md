@@ -122,6 +122,7 @@ Finally, the posterblock and logobox environments accept an optional argument th
 
   1. Like proposed on [TeX Stackexchange], typeset the TikZ picture in a *savebox* and use it later on.
   2. Create a PDF of the TikZ picture and use *\includegraphics* in the posterblock environment.
+  3. Use the [Standalone package] for including the TikZ picture.
 
 
 
@@ -197,7 +198,7 @@ Resulting poster:
         ultra thick,
         decoration=random steps,
         decorate,
-        inner sep=10
+        inner sep=5
       }
     }
 
@@ -206,7 +207,7 @@ Resulting poster:
     % tweak layout
     % increase width of poster
     \setlength{\textwidth}{\paperwidth - 30pt}
-    \settopmargin{10}
+    \settopmargin{15}
     \setblockpadding{20}
     \setblockspacing{15}
     \shadebackground{red!40}{blue!30}
@@ -307,4 +308,5 @@ Resulting poster:
 
 [PGF and TikZ]: http://sourceforge.net/projects/pgf/ "PGF and TikZ"
 [TeX Stackexchange]: http://tex.stackexchange.com/questions/23411/tikzpicture-in-node-of-another-tikzpicture-how-to-screen-of-from-inheriting-sty "TeX Stackexchange"
+[Standalone package]: https://www.ctan.org/pkg/standalone  "Standalone package"
 [Example]: poster.jpg
