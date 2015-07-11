@@ -197,7 +197,7 @@ Resulting poster:
         ultra thick,
         decoration=random steps,
         decorate,
-        inner sep=10
+        inner sep=5
       }
     }
 
@@ -206,7 +206,7 @@ Resulting poster:
     % tweak layout
     % increase width of poster
     \setlength{\textwidth}{\paperwidth - 30pt}
-    \settopmargin{10}
+    \settopmargin{15}
     \setblockpadding{20}
     \setblockspacing{15}
     \shadebackground{red!40}{blue!30}
