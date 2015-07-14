@@ -762,6 +762,20 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\newenvironment{posterblockH}[2][box]{
+  \poster.openBlock(#1)%
+  % ignore leading white space
+  \ignorespaces
+  % place content inside a minipage with fixed height
+  \begin{minipage}[c][#2][t]{\textwidth}%
+}
+{%
+  \end{minipage}%
+  \poster.closeBlock()
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \newenvironment{logobox}[1][logoboxbg]{
   \begin{scope}[on background layer]
     \coordinate (logobox) at (0, -0.5\paperheight);
