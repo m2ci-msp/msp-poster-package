@@ -30,6 +30,15 @@ Use
     \end{posterblock}
 
 to create a block on the poster with CONTENT.
+
+The environment
+
+    \begin{posterblockH}{H}
+        CONTENT
+    \end{posterblockH}
+
+generates a block with fixed height H on the poster.
+
 The blocks themselves are arranged automatically on the poster depending on the chosen layout.
 The default layout is using one block on each row. 
 
@@ -39,7 +48,7 @@ To have more columns, use the environment
       ...
     \end{postercolumns}
 
-where N is the desired number of columns. Currently up to 4 columns are supported.
+where N is the desired number of columns. Currently, up to 4 columns are supported.
 
 Use
 
@@ -82,7 +91,7 @@ To place content on the background, use
 
     \setbackground{CONTENT}
 
-Finally, the posterblock and logobox environments accept an optional argument that refers to a user-defined TikZ style for the block:
+Finally, the posterblock, posterblockH, and logobox environments accept an optional argument that refers to a user-defined TikZ style for the block:
 
     \tikzset{%
       myblock/.style={
@@ -104,6 +113,10 @@ Finally, the posterblock and logobox environments accept an optional argument th
     \begin{posterblock}[myblock]
         ...
     \end{posterblock}
+
+    \begin{posterblockH}[myblock]{100}
+        ...
+    \end{posterblockH}
 
     ...
 
