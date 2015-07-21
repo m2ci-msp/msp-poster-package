@@ -74,7 +74,7 @@ to change the spacing between two blocks to Y.
 
 Change the margin to the top boundary of the page with
 
-    \settopmargin(Z)
+    \settopmargin{Z}
 
 to Z.
 
