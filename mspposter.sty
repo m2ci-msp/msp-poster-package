@@ -636,8 +636,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % create tikzpicture
-\AtBeginDocument {%
-
+\newenvironment{poster}{%
   % set width
   \textwidth0.9\paperwidth
 
@@ -693,9 +692,7 @@
     \shade [bottom color=red!30,top color=orange!40]
     (upper -|  bgleft) rectangle (bottom -| bgright);
   \end{scope}
-}
-
-\AtEndDocument {%
+}{%
   \poster.closeBlock()
   \end{tikzpicture}%
 } 
