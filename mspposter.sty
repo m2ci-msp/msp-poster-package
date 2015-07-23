@@ -636,8 +636,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % create tikzpicture
-\AtBeginDocument {%
-
+\newenvironment{poster}{%
   % set width
   \textwidth0.9\paperwidth
 
@@ -658,7 +657,7 @@
       every node/.style={
         outer sep=0
       },
-      % style for boxes
+      % default style for poster block
       box/.style={
         opacity=0.5,
         text opacity=1.0,
@@ -667,6 +666,7 @@
         ultra thick,
         rounded corners
       },
+      % default style for logo bar
       logoboxbg/.style={
         align=center,
         minimum width=\paperwidth + 10pt,
@@ -693,9 +693,7 @@
     \shade [bottom color=red!30,top color=orange!40]
     (upper -|  bgleft) rectangle (bottom -| bgright);
   \end{scope}
-}
-
-\AtEndDocument {%
+}{%
   \poster.closeBlock()
   \end{tikzpicture}%
 } 
