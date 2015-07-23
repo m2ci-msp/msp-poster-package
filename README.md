@@ -23,6 +23,12 @@ to your preamble.
 
 ## Managing the content
 
+Place the content of the poster inside the poster environment:
+
+    \begin{poster}
+        ...
+    \end{poster}
+
 Use 
 
     \begin{posterblock}
@@ -217,6 +223,8 @@ Resulting poster:
 
     \begin{document}
 
+    \begin{poster}
+
     % tweak layout
     % increase width of poster
     \setlength{\textwidth}{\paperwidth - 30pt}
@@ -311,6 +319,8 @@ Resulting poster:
       \hfill
       \fbox{\huge \bfseries LOGO 4}
     \end{logobox}
+
+    \end{poster}
 
     \end{document}
 
