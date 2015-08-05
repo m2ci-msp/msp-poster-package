@@ -254,6 +254,24 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+  % let all poster blocks start at the currently largest y-value 
+  \method alignVertically(){
+    % two column
+    \coordinate (left) at (center -| left); 
+    \coordinate (right) at (center -| right); 
+    % three column
+    \coordinate (c3center) at (center -| c3center); 
+    \coordinate (c3left) at (center -| c3left); 
+    \coordinate (c3right) at (center -| c3right); 
+    % four column
+    \coordinate (c4left) at (center -| c4left); 
+    \coordinate (c4halfleft) at (center -| c4halfleft); 
+    \coordinate (c4halfright) at (center -| c4halfright); 
+    \coordinate (c4right) at (center -| c4right); 
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
   \method updateStateOneColumn(){
     % we only have one column, update all remaining anchors
     % two column
@@ -741,6 +759,7 @@
 \newenvironment{postercolumns}[1][1]{
   \poster.setColumns(#1)
 }{
+  \poster.alignVertically()
   \poster.setColumns(1)
 }
 
