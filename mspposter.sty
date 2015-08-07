@@ -93,10 +93,10 @@
     \pgfooset{blockOpen}{true}
     \currentPadding = \pgfoovalueof{blockPadding} pt
     \node [
-      anchor=north west,
       text width=#2,
       #1,
-      inner sep=\currentPadding] at (rowanchor)
+      inner sep=\currentPadding,
+      anchor=north west] at (rowanchor)
       (current)
       \bgroup
   }
@@ -113,10 +113,10 @@
     \pgfooset{blockOpen}{true}
     \currentPadding = \pgfoovalueof{blockPadding} pt
     \node [
-      anchor=north west,
       text width=\currentWidth,
       #1,
-      inner sep=\currentPadding] at (rowanchor)
+      inner sep=\currentPadding,
+      anchor=north west] at (rowanchor)
       (current)
       \bgroup
   }
