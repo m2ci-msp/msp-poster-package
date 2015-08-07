@@ -32,6 +32,15 @@
 
 \usepgfmodule{oo}
 
+%\url{http://tex.stackexchange.com/q/33703/86}
+\makeatletter
+\newcommand{\gettikzxy}[3]{%
+  \tikz@scan@one@point\pgfutil@firstofone#1\relax
+  \edef#2{\the\pgf@x}%
+  \edef#3{\the\pgf@y}%
+  }
+\makeatother
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % workaround for undefined control sequence error when 
@@ -47,6 +56,7 @@
 
   % ATTRIBUTES
 
+  \attribute rowHeight=20;
   \attribute topMargin=20;
   \attribute blockSpacing=20;
   \attribute blockOpen=false;
@@ -60,6 +70,80 @@
   \attribute blockPadding=10;
 
   % METHODS
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  \method initRow(#1){
+    \pgfooset{rowHeight}{#1}
+    \coordinate [below=\pgfoovalueof{blockSpacing}pt of rowstart] (rowanchor);
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  \method getRowHeight(#1){
+    \pgfooget{rowHeight}{#1}
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  \method openRowBlock(#1,#2){
+    % try to close any open block
+    \pgfoothis.closeRowBlock()
+    % set flag to true
+    \pgfooset{blockOpen}{true}
+    \currentPadding = \pgfoovalueof{blockPadding} pt
+    \node [
+      anchor=north west,
+      text width=#2,
+      #1,
+      inner sep=\currentPadding] at (rowanchor)
+      (current)
+      \bgroup
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  \method openRowBlockFill(#1){
+    \gettikzxy{(rowanchor)}{\vx}{\vy}
+    \pgfmathparse{veclen(0.5 * \textwidth - \vx, 0) - 2 * \pgfoovalueof{blockPadding}} 
+    \currentWidth = \pgfmathresult pt
+    % try to close any open block
+    \pgfoothis.closeRowBlock()
+    % set flag to true
+    \pgfooset{blockOpen}{true}
+    \currentPadding = \pgfoovalueof{blockPadding} pt
+    \node [
+      anchor=north west,
+      text width=\currentWidth,
+      #1,
+      inner sep=\currentPadding] at (rowanchor)
+      (current)
+      \bgroup
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  \method closeRowBlock(){
+    % only close block if it is open
+    \ifthenelse{\equal{\pgfoovalueof{blockOpen}}{true}}
+    {%
+      \egroup;
+      % use path intersections to update coordinates
+      % only update center if y value is smaller
+      \path let
+        \p1 = (center),
+        \p2 = (current.south) 
+        in \ifdim \y2 < \y1 coordinate (center) at (\x1, \y2)\fi;
+      % set flag to false
+      \pgfooset{blockOpen}{false}%
+      % update row anchor
+      \path let
+        \p1 = (current.north east)
+        in coordinate (rowanchor) at (\x1 + \pgfoovalueof{blockSpacing}pt, \y1);
+    }%
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   \method openBlockOneColumn(#1){
     \currentWidth = \pgfoovalueof{oneColumnWidth} pt
@@ -256,6 +340,8 @@
 
   % let all poster blocks start at the currently largest y-value 
   \method alignVertically(){
+    % row anchor
+    \coordinate (rowstart) at (center -| rowstart); 
     % two column
     \coordinate (left) at (center -| left); 
     \coordinate (right) at (center -| right); 
@@ -579,6 +665,8 @@
     % add blockSpacing to each y-coordinate, it is removed by the first block
     \pgfmathparse{ 0.5\paperheight + \pgfoovalueof{blockSpacing} - \pgfoovalueof{topMargin}}
     \coordinate (center) at (0, \pgfmathresult pt);
+    % anchor for poster row
+    \coordinate (rowstart) at (-0.5 * \textwidth, \pgfmathresult pt);
     % anchors for two column layout
     % align both anchors to create the wanted spacing between
     % two columns
@@ -765,6 +853,15 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\newenvironment{posterrow}[1]{
+  \poster.initRow(#1)
+}{
+  \poster.alignVertically()
+  \poster.setColumns(1)
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \newenvironment{posterblock}[1][box]{
   \poster.openBlock(#1)%
   % ignore leading white space
@@ -775,6 +872,38 @@
 {%
   \end{minipage}%
   \poster.closeBlock()
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newenvironment{posterblockW}[2][box]{
+  \poster.getRowHeight(\currentHeight)
+  % open row block with the specified width
+  \poster.openRowBlock(#1,#2)%
+  % ignore leading white space
+  \ignorespaces
+  % place content inside a minipage with height of the row
+  \begin{minipage}[c][\currentHeight pt][t]{\textwidth}%
+}
+{%
+  \end{minipage}%
+  \poster.closeRowBlock()
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newenvironment{posterblockWFill}[1][box]{
+  \poster.getRowHeight(\currentHeight)
+  % open row block and use the remaining horizontal space as width
+  \poster.openRowBlockFill(#1)%
+  % ignore leading white space
+  \ignorespaces
+  % place content inside a minipage with height of the row
+  \begin{minipage}[c][\currentHeight pt][t]{\textwidth}%
+}
+{%
+  \end{minipage}%
+  \poster.closeRowBlock()
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
