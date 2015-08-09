@@ -43,11 +43,6 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% workaround for undefined control sequence error when 
-% using tikzpicture inside a node
-\newdimen\currentWidth
-\newdimen\currentPadding
-
 % class for poster
 \pgfooclass{poster}{
 
@@ -56,572 +51,188 @@
 
   % ATTRIBUTES
 
-  \attribute rowHeight=20;
+  \attribute columnWidth=20;
   \attribute topMargin=20;
   \attribute blockSpacing=20;
   \attribute blockOpen=false;
   \attribute columnAmount=1;
   \attribute currentColumn=1;
   \attribute blockWidth=\textwidth;
-  \attribute oneColumnWidth=\textwidth; 
-  \attribute twoColumnWidth=\textwidth; 
-  \attribute threeColumnWidth=\textwidth; 
-  \attribute fourColumnWidth=\textwidth; 
   \attribute blockPadding=10;
+  \attribute placementMode=rowFirst;
 
   % METHODS
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  \method initRow(#1){
-    \pgfooset{rowHeight}{#1}
-    \coordinate [below=\pgfoovalueof{blockSpacing}pt of rowstart] (rowanchor);
+  \method setPlacementMode(#1) {
+    \pgfooset{placementMode}{#1}
   }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  \method getRowHeight(#1){
-    \pgfooget{rowHeight}{#1}
-  }
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-  \method openRowBlock(#1,#2){
-    % try to close any open block
-    \pgfoothis.closeRowBlock()
+  \method openBlock(#1) {
+    \pgfoothis.closeBlock()
+    \pgfooget{columnWidth}{\currentWidth}
+    \pgfooget{blockPadding}{\currentPadding}
     % set flag to true
     \pgfooset{blockOpen}{true}
-    \currentPadding = \pgfoovalueof{blockPadding} pt
+    \node [
+      text width=\currentWidth pt,
+      #1,
+      inner sep=\currentPadding pt,
+      anchor=north west] at (blockanchor)
+      (current)
+      \bgroup
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  \method openBlockW(#1,#2){
+    % this is a block with custom width -> do not count it as a usual column
+    \pgfmathparse{int(\pgfoovalueof{currentColumn} - 1)}
+    \pgfoolet{currentColumn}{\pgfmathresult}
+    % try to close any open block
+    \pgfoothis.closeBlock()
+    \pgfooget{blockPadding}{\currentPadding}
+    % set flag to true
+    \pgfooset{blockOpen}{true}
     \node [
       text width=#2,
       #1,
-      inner sep=\currentPadding,
-      anchor=north west] at (rowanchor)
+      inner sep=\currentPadding pt,
+      anchor=north west] at (blockanchor)
       (current)
       \bgroup
   }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  \method openRowBlockFill(#1){
-    \gettikzxy{(rowanchor)}{\vx}{\vy}
+  \method openBlockWFill(#1){
+    % indicate that this is the last column on the row
+    \pgfooset{currentColumn}{\pgfoovalueof{columnAmount}}
+    % compute remaining space to right boundary
+    \gettikzxy{(blockanchor)}{\vx}{\vy}
     \pgfmathparse{veclen(0.5 * \textwidth - \vx, 0) - 2 * \pgfoovalueof{blockPadding}} 
-    \currentWidth = \pgfmathresult pt
-    % try to close any open block
-    \pgfoothis.closeRowBlock()
-    % set flag to true
-    \pgfooset{blockOpen}{true}
-    \currentPadding = \pgfoovalueof{blockPadding} pt
-    \node [
-      text width=\currentWidth,
-      #1,
-      inner sep=\currentPadding,
-      anchor=north west] at (rowanchor)
-      (current)
-      \bgroup
-  }
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-  \method closeRowBlock(){
-    % only close block if it is open
-    \ifthenelse{\equal{\pgfoovalueof{blockOpen}}{true}}
-    {%
-      \egroup;
-      % use path intersections to update coordinates
-      % only update center if y value is smaller
-      \path let
-        \p1 = (center),
-        \p2 = (current.south) 
-        in \ifdim \y2 < \y1 coordinate (center) at (\x1, \y2)\fi;
-      % set flag to false
-      \pgfooset{blockOpen}{false}%
-      % update row anchor
-      \path let
-        \p1 = (current.north east)
-        in coordinate (rowanchor) at (\x1 + \pgfoovalueof{blockSpacing}pt, \y1);
-    }%
-  }
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-  \method openBlockOneColumn(#1){
-    \currentWidth = \pgfoovalueof{oneColumnWidth} pt
-    \currentPadding = \pgfoovalueof{blockPadding} pt
-    \node [
-      below=\pgfoovalueof{blockSpacing}pt of center,
-      text width=\currentWidth,
-      #1,
-      inner sep=\currentPadding,
-      anchor=north]
-      (current)
-      \bgroup
-  }
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-  \method openBlockTwoColumn(#1){
-    \currentWidth = \pgfoovalueof{twoColumnWidth} pt
-    \currentPadding = \pgfoovalueof{blockPadding} pt
-    \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{1}}
-    {
-      \node [
-        below=\pgfoovalueof{blockSpacing}pt of left,
-        text width=\currentWidth,
-        #1,
-        inner sep=\currentPadding,
-        anchor=north]
-        (current)
-      \bgroup
-    }
-    {
-      \node [
-        below=\pgfoovalueof{blockSpacing}pt of right,
-        text width=\currentWidth,
-        #1,
-        inner sep=\currentPadding,
-        anchor=north]
-        (current)
-      \bgroup
-    }
-  }
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-  \method openBlockThreeColumn(#1){
-    \currentWidth = \pgfoovalueof{threeColumnWidth} pt
-    \currentPadding = \pgfoovalueof{blockPadding} pt
-    \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{1}}
-    {
-      \node [
-        below=\pgfoovalueof{blockSpacing}pt of c3left,
-        text width=\currentWidth,
-        #1,
-        inner sep=\currentPadding,
-        anchor=north]
-        (current)
-      \bgroup
-    }
-    {%
-      % else
-    }%
-    \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{2}}
-    {
-      \node [
-        below=\pgfoovalueof{blockSpacing}pt of c3center,
-        text width=\currentWidth,
-        #1,
-        inner sep=\currentPadding,
-        anchor=north]
-        (current)
-      \bgroup
-    }
-    {%
-      % else
-    }%
-    \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{3}}
-    {
-      \node [
-        below=\pgfoovalueof{blockSpacing}pt of c3right,
-        text width=\currentWidth,
-        #1,
-        inner sep=\currentPadding,
-        anchor=north]
-        (current)
-      \bgroup
-    }
-    {%
-      % else
-    }%
-  }
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-  \method openBlockFourColumn(#1){
-    \currentWidth = \pgfoovalueof{fourColumnWidth} pt
-    \currentPadding = \pgfoovalueof{blockPadding} pt
-    \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{1}}
-    {
-      \node [
-        below=\pgfoovalueof{blockSpacing}pt of c4left,
-        text width=\currentWidth,
-        #1,
-        inner sep=\currentPadding,
-        anchor=north]
-        (current)
-      \bgroup
-    }
-    {%
-      % else
-    }%
-    \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{2}}
-    {
-      \node [
-        below=\pgfoovalueof{blockSpacing}pt of c4halfleft,
-        text width=\currentWidth,
-        #1,
-        inner sep=\currentPadding,
-        anchor=north]
-        (current)
-      \bgroup
-    }
-    {%
-      % else
-    }%
-    \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{3}}
-    {
-      \node [
-        below=\pgfoovalueof{blockSpacing}pt of c4halfright,
-        text width=\currentWidth,
-        #1,
-        inner sep=\currentPadding,
-        anchor=north]
-        (current)
-      \bgroup
-    }
-    {%
-      % else
-    }%
-    \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{4}}
-    {
-      \node [
-        below=\pgfoovalueof{blockSpacing}pt of c4right,
-        text width=\currentWidth,
-        #1,
-        inner sep=\currentPadding,
-        anchor=north]
-        (current)
-      \bgroup
-    }
-    {%
-      % else
-    }%
-  }
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-  \method openBlock(#1){%
+    \let\currentWidth\pgfmathresult
     % try to close any open block
     \pgfoothis.closeBlock()
     % set flag to true
     \pgfooset{blockOpen}{true}
-    % 
-    \ifthenelse{\equal{\pgfoovalueof{columnAmount}}{1}}
-    {
-      \pgfoothis.openBlockOneColumn(#1)%
-    }
-    {%
-      % else
-    }%
-    \ifthenelse{\equal{\pgfoovalueof{columnAmount}}{2}}
-    {
-      \pgfoothis.openBlockTwoColumn(#1)%
-    }
-    {%
-      % else
-    }%
-    \ifthenelse{\equal{\pgfoovalueof{columnAmount}}{3}}
-    {
-      \pgfoothis.openBlockThreeColumn(#1)%
-    }
-    {%
-      % else
-    }%
-    \ifthenelse{\equal{\pgfoovalueof{columnAmount}}{4}}
-    {
-      \pgfoothis.openBlockFourColumn(#1)%
-    }
-    {%
-      % else
-    }%
+    \pgfooget{blockPadding}{\currentPadding}
+    \node [
+      text width=\currentWidth pt,
+      #1,
+      inner sep=\currentPadding pt,
+      anchor=north west] at (blockanchor)
+      (current)
+      \bgroup
   }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-  % let all poster blocks start at the currently largest y-value 
-  \method alignVertically(){
-    % row anchor
-    \coordinate (rowstart) at (center -| rowstart); 
-    % two column
-    \coordinate (left) at (center -| left); 
-    \coordinate (right) at (center -| right); 
-    % three column
-    \coordinate (c3center) at (center -| c3center); 
-    \coordinate (c3left) at (center -| c3left); 
-    \coordinate (c3right) at (center -| c3right); 
-    % four column
-    \coordinate (c4left) at (center -| c4left); 
-    \coordinate (c4halfleft) at (center -| c4halfleft); 
-    \coordinate (c4halfright) at (center -| c4halfright); 
-    \coordinate (c4right) at (center -| c4right); 
-  }
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-  \method updateStateOneColumn(){
-    % we only have one column, update all remaining anchors
-    % two column
-    \coordinate (left) at (current.south -| left); 
-    \coordinate (right) at (current.south -| right); 
-    % three column
-    \coordinate (c3center) at (current.south -| c3center); 
-    \coordinate (c3left) at (current.south -| c3left); 
-    \coordinate (c3right) at (current.south -| c3right); 
-    % four column
-    \coordinate (c4left) at (current.south -| c4left); 
-    \coordinate (c4halfleft) at (current.south -| c4halfleft); 
-    \coordinate (c4halfright) at (current.south -| c4halfright); 
-    \coordinate (c4right) at (current.south -| c4right); 
-  }
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-  \method updateStateTwoColumn(){
-    % we have two columns, check which is the current one
-    \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{1}}
-    {
-      % update left anchor and move to next column
-      \coordinate (left) at (current.south -| left); 
-      \pgfooset{currentColumn}{2}
-    }
-    {
-      % update right anchor and move to first column
-      \pgfooset{currentColumn}{1}
-      \coordinate (right) at (current.south -| right); 
-    }
-    % update anchors for three column layout
-    \path let
-      \p1 = (c3left),
-      \p2 = (center) 
-      in coordinate (c3left) at (\x1, \y2);
-    \path let
-      \p1 = (c3center),
-      \p2 = (center) 
-      in coordinate (c3center) at (\x1, \y2);
-    \path let
-      \p1 = (c3right),
-      \p2 = (center) 
-      in coordinate (c3right) at (\x1, \y2);
-    % update anchors for four column layout
-    \path let
-      \p1 = (c4left),
-      \p2 = (center) 
-      in coordinate (c4left) at (\x1, \y2);
-    \path let
-      \p1 = (c4halfleft),
-      \p2 = (center) 
-      in coordinate (c4halfleft) at (\x1, \y2);
-    \path let
-      \p1 = (c4halfright),
-      \p2 = (center) 
-      in coordinate (c4halfright) at (\x1, \y2);
-    \path let
-      \p1 = (c4right),
-      \p2 = (center) 
-      in coordinate (c4right) at (\x1, \y2);
-  }
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-  \method updateStateThreeColumn(){
-    % we have three columns, check which is the current one
-    \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{1}}
-    {
-      % update left anchor and move to next column
-      \coordinate (c3left) at (current.south -| c3left); 
-      \pgfooset{currentColumn}{2}
-    }
-    {
-    % else
-    \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{2}}
-    {
-       % update center anchor and move to next column
-      \coordinate (c3center) at (current.south -| c3center); 
-      \pgfooset{currentColumn}{3}
-    }
-    {
-      % else
-    \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{3}}
-    {
-      % update right anchor and move to first column
-      \coordinate (c3right) at (current.south -| c3right); 
-      \pgfooset{currentColumn}{1}
-    }
-    {
-      % else
-    }}}
-    % update anchors for two column layout
-    \path let
-      \p1 = (left),
-      \p2 = (center) 
-      in coordinate (left) at (\x1, \y2);
-    \path let
-      \p1 = (right),
-      \p2 = (center) 
-      in coordinate (right) at (\x1, \y2);
-    % update anchors for four column layout
-    \path let
-      \p1 = (c4left),
-      \p2 = (center) 
-      in coordinate (c4left) at (\x1, \y2);
-    \path let
-      \p1 = (c4halfleft),
-      \p2 = (center) 
-      in coordinate (c4halfleft) at (\x1, \y2);
-    \path let
-      \p1 = (c4halfright),
-      \p2 = (center) 
-      in coordinate (c4halfright) at (\x1, \y2);
-    \path let
-      \p1 = (c4right),
-      \p2 = (center) 
-      in coordinate (c4right) at (\x1, \y2);
-  }
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-  \method updateStateFourColumn(){
-    % we have three columns, check which is the current one
-    \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{1}}
-    {
-      % update left anchor and move to next column
-      \coordinate (c4left) at (current.south -| c4left); 
-      \pgfooset{currentColumn}{2}
-    }
-    {
-    % else
-    \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{2}}
-    {
-       % update center anchor and move to next column
-      \coordinate (c4halfleft) at (current.south -| c4halfleft); 
-      \pgfooset{currentColumn}{3}
-    }
-    {
-      % else
-    \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{3}}
-    {
-      % update right anchor and move to first column
-      \coordinate (c4halfright) at (current.south -| c4halfright); 
-      \pgfooset{currentColumn}{4}
-    }
-    {
-      % else
-    \ifthenelse{\equal{\pgfoovalueof{currentColumn}}{4}}
-    {
-      % update right anchor and move to first column
-      \coordinate (c4right) at (current.south -| c4right); 
-      \pgfooset{currentColumn}{1}
-    }
-    {
-      % else
-    }}}}
-    % update anchors for two column layout
-    \path let
-      \p1 = (left),
-      \p2 = (center) 
-      in coordinate (left) at (\x1, \y2);
-    \path let
-      \p1 = (right),
-      \p2 = (center) 
-      in coordinate (right) at (\x1, \y2);
-    % update anchors for three column layout
-    \path let
-      \p1 = (c3left),
-      \p2 = (center) 
-      in coordinate (c3left) at (\x1, \y2);
-    \path let
-      \p1 = (c3center),
-      \p2 = (center) 
-      in coordinate (c3center) at (\x1, \y2);
-    \path let
-      \p1 = (c3right),
-      \p2 = (center) 
-      in coordinate (c3right) at (\x1, \y2);
-  }
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 
   \method closeBlock(){
     % only close block if it is open
     \ifthenelse{\equal{\pgfoovalueof{blockOpen}}{true}}
     {%
       \egroup;
-      % use path intersections to update coordinates
-      % only update center if y value is smaller
+      % keep track of largest y value
       \path let
-        \p1 = (center),
+        \p1 = (largesty),
         \p2 = (current.south) 
-        in \ifdim \y2 < \y1 coordinate (center) at (\x1, \y2)\fi;
+        in \ifdim \y2 < \y1 coordinate (largesty) at (\x1, \y2)\fi;
       % set flag to false
-      \pgfooset{blockOpen}{false}
-      % update anchors and select next column
-      \ifthenelse{\equal{\pgfoovalueof{columnAmount}}{1}}{
-        \pgfoothis.updateStateOneColumn()
-      }
-      {
+      \pgfooset{blockOpen}{false}%
+      % update internal state depending on chosen placement mode
+      \ifthenelse{\equal{\pgfoovalueof{placementMode}}{rowFirst}}{%
+        \pgfoothis.updateStateRow()
+      }{%
         % else
+        \pgfoothis.updateStateColumn()
       }
-      \ifthenelse{\equal{\pgfoovalueof{columnAmount}}{2}}
-      {
-        \pgfoothis.updateStateTwoColumn()
-      }
-      {
-        % else
-      }
-      \ifthenelse{\equal{\pgfoovalueof{columnAmount}}{3}}
-      {
-        \pgfoothis.updateStateThreeColumn()
-      }
-      {
-        % else
-      }
-      \ifthenelse{\equal{\pgfoovalueof{columnAmount}}{4}}
-      {
-        \pgfoothis.updateStateFourColumn()
-      }
-      {
-        % else
-      }
-    }
-    {
-      % else
-    }
+    }%
   }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  \method updateLayout() {
-    % set width of block in one column layout
-    \pgfmathparse{ \textwidth - 2 * \pgfoovalueof{blockPadding}} 
-    \pgfoolet{oneColumnWidth}{\pgfmathresult}
-    % set width of block in two column layout
-    \pgfmathparse{ (
+  \method updateStateRow() {
+    % move to next column
+      \path let
+        \p1 = (current.north east)
+        in coordinate (blockanchor) at (\x1 + \pgfoovalueof{blockSpacing}pt, \y1);
+      % check if we are at the last column
+      \ifthenelse{\equal{\pgfoovalueof{columnAmount}}{\pgfoovalueof{currentColumn}}}{%
+        % yes, move to next row
+        \pgfoothis.nextRow()%
+      }{%
+        % no, increment column number
+        \pgfmathparse{int(\pgfoovalueof{currentColumn} + 1)}
+        \pgfoolet{currentColumn}{\pgfmathresult}
+      }%
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  \method updateStateColumn() {
+    % move to next row
+    \path let
+      \p1 = (current.south west)
+        in coordinate (blockanchor) at (\x1, \y1 - \pgfoovalueof{blockSpacing}pt);
+  }
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  \method nextRow(){
+    % move base anchor to next row 
+    \coordinate (baseanchor) at (largesty -| baseanchor); 
+    % initialize block anchor to first column
+    \coordinate [below=\pgfoovalueof{blockSpacing}pt of baseanchor] (blockanchor);
+    % return to first column
+    \pgfooset{currentColumn}{1}
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  \method nextColumn(){
+    % increment currentColumn
+    \pgfmathparse{int(\pgfoovalueof{currentColumn} + 1)}
+    \pgfoolet{currentColumn}{\pgfmathresult}
+    % compute x-offset to base anchor
+    \pgfmathparse{
+      (\pgfoovalueof{currentColumn} - 1) * (
+        \pgfoovalueof{columnWidth} + \pgfoovalueof{blockSpacing} +
+        2 * \pgfoovalueof{blockPadding}
+        )
+    }
+    % set block anchor for column
+    \path let
+      \p1 = (baseanchor)
+      in coordinate (blockanchor) at
+        (\x1 + \pgfmathresult pt, \y1 - \pgfoovalueof{blockSpacing});
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  \method computeColumnWidth() {
+    % derive the column width by using the amount of columns, textwidth,
+    % block padding, and the block spacing
+  \pgfmathparse{ (
           \textwidth
-        - 4 * \pgfoovalueof{blockPadding}
-        - \pgfoovalueof{blockSpacing}
-      ) / 2
+          - 2 * \pgfoovalueof{columnAmount} * \pgfoovalueof{blockPadding}
+          - ( \pgfoovalueof{columnAmount} - 1) * \pgfoovalueof{blockSpacing}
+          ) / \pgfoovalueof{columnAmount}
     } 
-    \pgfoolet{twoColumnWidth}{\pgfmathresult}
-    % set width of block in three column layout
-    \pgfmathparse{ (
-          \textwidth
-        - 6 * \pgfoovalueof{blockPadding}
-        - 2 * \pgfoovalueof{blockSpacing}
-      ) / 3
-    } 
-    \pgfoolet{threeColumnWidth}{\pgfmathresult}
-    % set width of block in four column layout
-    \pgfmathparse{ (
-          \textwidth
-        - 8 * \pgfoovalueof{blockPadding}
-        - 3 * \pgfoovalueof{blockSpacing}
-      ) / 4
-    } 
-    \pgfoolet{fourColumnWidth}{\pgfmathresult}
-    % setup anchors now, method uses twoColumnWidth, threeColumnWidth, and
-    % fourColumnWidth
-    \pgfoothis.setupAnchors()
+    \pgfoolet{columnWidth}{\pgfmathresult}
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  % initializes data structures for current poster block container
+  \method initRows(#1,#2){
+    \pgfooset{placementMode}{#2}
+    \pgfoothis.setColumns(#1)
+    \coordinate [below=\pgfoovalueof{blockSpacing}pt of baseanchor] (blockanchor);
   }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -636,7 +247,7 @@
   \method setBlockSpacing(#1) {
     \pgfooset{blockSpacing}{#1}
     \pgfoothis.updateLayout()
-    }
+  }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -648,6 +259,8 @@
     \pgfooset{columnAmount}{#1}
     % return to first column after change
     \pgfooset{currentColumn}{1}
+    % compute column width
+    \pgfoothis.computeColumnWidth()%
   }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -659,83 +272,24 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+  \method updateLayout() {
+    \pgfoothis.computeColumnWidth()
+    \pgfoothis.setupAnchors()
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
   \method setupAnchors() {
     % initialize the anchors
     % compute y-coordinate for all anchors,
     % add blockSpacing to each y-coordinate, it is removed by the first block
     \pgfmathparse{ 0.5\paperheight + \pgfoovalueof{blockSpacing} - \pgfoovalueof{topMargin}}
-    \coordinate (center) at (0, \pgfmathresult pt);
-    % anchor for poster row
-    \coordinate (rowstart) at (-0.5 * \textwidth, \pgfmathresult pt);
-    % anchors for two column layout
-    % align both anchors to create the wanted spacing between
-    % two columns
-    \coordinate (left) at  
-      ( - 0.5 * \pgfoovalueof{blockSpacing}
-        - \pgfoovalueof{blockPadding}
-        - 0.5 * \pgfoovalueof{twoColumnWidth}
-        - 0pt,
-        \pgfmathresult pt
-        );
-    \coordinate (right) at 
-    (     0.5 * \pgfoovalueof{blockSpacing}
-        + \pgfoovalueof{blockPadding}
-        + 0.5 * \pgfoovalueof{twoColumnWidth}
-        + 0pt,
-        \pgfmathresult pt
-        );
-    % anchors for three column layout
-    % left
-    \coordinate (c3left) at
-    ( - 2 * \pgfoovalueof{blockPadding} 
-      - \pgfoovalueof{threeColumnWidth} 
-      - \pgfoovalueof{blockSpacing}
-      - 0pt,
-      \pgfmathresult pt
-      );
-    % center
-    \coordinate (c3center) at (0, \pgfmathresult pt);
-    % right
-    \coordinate (c3right) at
-    (   2 * \pgfoovalueof{blockPadding}
-      + \pgfoovalueof{threeColumnWidth}
-      + \pgfoovalueof{blockSpacing}
-      + 0pt,
-      \pgfmathresult pt
-      );
-    % anchors for four column layout
-    % left
-    \coordinate (c4left) at
-    ( - 3   * \pgfoovalueof{blockPadding} 
-      - 1.5 * \pgfoovalueof{fourColumnWidth} 
-      - 1.5   * \pgfoovalueof{blockSpacing}
-      - 0pt,
-      \pgfmathresult pt
-      );
-    % half left
-    \coordinate (c4halfleft) at
-    ( - 1   * \pgfoovalueof{blockPadding} 
-      - 0.5 * \pgfoovalueof{fourColumnWidth} 
-      - 0.5   * \pgfoovalueof{blockSpacing}
-      - 0pt,
-      \pgfmathresult pt
-      );
-    % half right
-    \coordinate (c4halfright) at
-    (   1   * \pgfoovalueof{blockPadding} 
-      + 0.5 * \pgfoovalueof{fourColumnWidth} 
-      + 0.5   * \pgfoovalueof{blockSpacing}
-      + 0pt,
-      \pgfmathresult pt
-      );
-    % right
-    \coordinate (c4right) at
-    (   3   * \pgfoovalueof{blockPadding} 
-      + 1.5 * \pgfoovalueof{fourColumnWidth} 
-      + 1.5   * \pgfoovalueof{blockSpacing}
-      + 0pt,
-      \pgfmathresult pt
-      );
+    % anchor for keeping track of largest y-value
+    \coordinate (largesty) at (0, \pgfmathresult pt);
+    % base anchor that is used to derive the actual anchors for the poster blocks
+    \coordinate (baseanchor) at (-0.5 * \textwidth, \pgfmathresult pt);
+    % initialize first block anchor
+    \coordinate [below=\pgfoovalueof{blockSpacing}pt of baseanchor] (blockanchor);
   }
 }
 
@@ -743,8 +297,6 @@
 
 % create tikzpicture
 \newenvironment{poster}{%
-  % set width
-  \textwidth0.9\paperwidth
 
   % create poster object
   \pgfoonew \poster=new poster()
@@ -813,6 +365,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newcommand{\setblockspacing}[1] {
+  % modify text width such that poster is centered
+  \pgfmathparse{\paperwidth - 2 * #1}
+  \setlength{\textwidth}{\pgfmathresult pt}
   \poster.setBlockSpacing(#1)
 }
 
@@ -823,7 +378,6 @@
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 
 \newcommand{\shadebackground}[2] {
 \begin{scope}[on background layer]
@@ -844,20 +398,26 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\newenvironment{postercolumns}[1][1]{
+% row first container
+\newenvironment{posterrows}[1][1]{
+  \poster.initRows(#1,rowFirst)
   \poster.setColumns(#1)
 }{
-  \poster.alignVertically()
+  \poster.nextRow()
   \poster.setColumns(1)
+  \poster.setPlacementMode(rowFirst)
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\newenvironment{posterrow}[1]{
-  \poster.initRow(#1)
+% column first container
+\newenvironment{postercolumns}[1][1]{
+  \poster.initRows(#1,columnFirst)
+  \poster.setColumns(#1)
 }{
-  \poster.alignVertically()
+  \poster.nextRow()
   \poster.setColumns(1)
+  \poster.setPlacementMode(rowFirst)
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -876,34 +436,32 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\newenvironment{posterblockW}[2][box]{
-  \poster.getRowHeight(\currentHeight)
+\newenvironment{posterblockW}[3][box]{
   % open row block with the specified width
-  \poster.openRowBlock(#1,#2)%
+  \poster.openBlockW(#1,#2)%
   % ignore leading white space
   \ignorespaces
-  % place content inside a minipage with height of the row
-  \begin{minipage}[c][\currentHeight pt][t]{\textwidth}%
+  % place content inside a minipage with specified height
+  \begin{minipage}[c][#3pt][t]{\textwidth}%
 }
 {%
   \end{minipage}%
-  \poster.closeRowBlock()
+  \poster.closeBlock()
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\newenvironment{posterblockWFill}[1][box]{
-  \poster.getRowHeight(\currentHeight)
+\newenvironment{posterblockWFill}[2][box]{
   % open row block and use the remaining horizontal space as width
-  \poster.openRowBlockFill(#1)%
+  \poster.openBlockWFill(#1)%
   % ignore leading white space
   \ignorespaces
-  % place content inside a minipage with height of the row
-  \begin{minipage}[c][\currentHeight pt][t]{\textwidth}%
+  % place content inside a minipage with specified height
+  \begin{minipage}[c][#2pt][t]{\textwidth}%
 }
 {%
   \end{minipage}%
-  \poster.closeRowBlock()
+  \poster.closeBlock()
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -918,6 +476,12 @@
 {%
   \end{minipage}%
   \poster.closeBlock()
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\posternextcolumn}{
+  \poster.nextColumn()
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
