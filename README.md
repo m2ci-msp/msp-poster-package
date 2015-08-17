@@ -119,7 +119,6 @@ Use
     \setblockspacing{Y}
 
 to change the spacing between two blocks to Y.
-This command also adjusts the text width to center the poster on the page.
 
 Change the margins with
 
