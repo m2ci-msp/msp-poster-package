@@ -264,8 +264,11 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  \method setTopMargin(#1) {
-    \pgfooset{topMargin}{#1}
+  \method setMargins(#1,#2) {
+    % modify text width such that poster is centered
+    \pgfmathparse{\paperwidth - 2 * #1}
+    \setlength{\textwidth}{\pgfmathresult pt}
+    \pgfooset{topMargin}{#2}
     \pgfoothis.updateLayout()
   }
 
@@ -337,7 +340,8 @@
       }
   ]
 
-  \poster.updateLayout()
+  % use current block spacing as margin
+  \poster.setMargins(20,20)
 
   % for background shading
   \coordinate (bgleft) at (-.5\paperwidth,0);
@@ -364,16 +368,13 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newcommand{\setblockspacing}[1] {
-  % modify text width such that poster is centered
-  \pgfmathparse{\paperwidth - 2 * #1}
-  \setlength{\textwidth}{\pgfmathresult pt}
   \poster.setBlockSpacing(#1)
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\newcommand{\settopmargin}[1] {
-  \poster.setTopMargin(#1)
+\newcommand{\setmargins}[2] {
+  \poster.setMargins(#1,#2)
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
