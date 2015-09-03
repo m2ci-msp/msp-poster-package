@@ -155,16 +155,15 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   \method updateStateRow() {
-    % move to next column
-      \path let
-        \p1 = (current.north east)
-        in coordinate (blockanchor) at (\x1 + \pgfoovalueof{blockSpacing}pt, \y1);
       % check if we are at the last column
       \ifthenelse{\equal{\pgfoovalueof{columnAmount}}{\pgfoovalueof{currentColumn}}}{%
         % yes, move to next row
         \pgfoothis.nextRow()%
       }{%
-        % no, increment column number
+        % no, increment column number and move to next column
+        \path let
+          \p1 = (current.north east)
+          in coordinate (blockanchor) at (\x1 + \pgfoovalueof{blockSpacing}pt, \y1);
         \pgfmathparse{int(\pgfoovalueof{currentColumn} + 1)}
         \pgfoolet{currentColumn}{\pgfmathresult}
       }%
