@@ -317,7 +317,7 @@
         outer sep=0
       },
       % default style for poster block
-      box/.style={
+      posterblock/.style={
         opacity=0.5,
         text opacity=1.0,
         fill=white,
@@ -326,7 +326,7 @@
         rounded corners
       },
       % default style for logo bar
-      logoboxbg/.style={
+      logobar/.style={
         align=center,
         minimum width=\paperwidth + 10pt,
         text width=\textwidth,
@@ -339,7 +339,7 @@
       }
   ]
 
-  % use current block spacing as margin
+  % use 20pt as margin
   \poster.setMargins(20,20)
 
   % for background shading
@@ -421,7 +421,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\newenvironment{posterblock}[1][box]{
+\newenvironment{posterblock}[1][posterblock]{
   \poster.openBlock(#1)%
   % ignore leading white space
   \ignorespaces
@@ -435,7 +435,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\newenvironment{posterblockW}[3][box]{
+\newenvironment{posterblockW}[3][posterblock]{
   % open row block with the specified width
   \poster.openBlockW(#1,#2)%
   % ignore leading white space
@@ -450,7 +450,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\newenvironment{posterblockWFill}[2][box]{
+\newenvironment{posterblockWFill}[2][posterblock]{
   % open row block and use the remaining horizontal space as width
   \poster.openBlockWFill(#1)%
   % ignore leading white space
@@ -465,7 +465,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\newenvironment{posterblockH}[2][box]{
+\newenvironment{posterblockH}[2][posterblock]{
   \poster.openBlock(#1)%
   % ignore leading white space
   \ignorespaces
@@ -485,11 +485,11 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\newenvironment{logobox}[1][logoboxbg]{
+\newenvironment{logobar}[1][logobar]{
   \begin{scope}[on background layer]
-    \coordinate (logobox) at (0, -0.5\paperheight);
+    \coordinate (logobar) at (0, -0.5\paperheight);
     % shift a little bit, such that the bottom border is not visible
-    \node [#1, above=-4pt of logobox] \bgroup
+    \node [#1, above=-4pt of logobar] \bgroup
     % ignore leading white space
     \ignorespaces
     % place content inside a minipage
