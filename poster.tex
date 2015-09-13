@@ -15,7 +15,7 @@
 
 % create custom styles
 \tikzset{
-  mysmallbox/.style={
+  myblock/.style={
     ultra thick,
     decoration=random steps,
     decorate,
@@ -24,7 +24,7 @@
     opacity=0.5,
     text opacity=1.0
   },
-  mylogobox/.style={
+  mylogobar/.style={
     minimum width=\paperwidth + 10pt,
     text width=\textwidth,
     fill=white,
@@ -48,22 +48,22 @@
 
 \begin{posterrows}[4]
 
-  \begin{posterblock}[mysmallbox]
+  \begin{posterblock}[myblock]
     \centering
     I am a poster block with a fancy style!
   \end{posterblock}
 
-  \begin{posterblock}[mysmallbox]
+  \begin{posterblock}[myblock]
     \centering
     I am a poster block with a fancy style!
   \end{posterblock}
 
-  \begin{posterblock}[mysmallbox]
+  \begin{posterblock}[myblock]
     \centering
     I am a poster block with a fancy style!
   \end{posterblock}
 
-  \begin{posterblock}[mysmallbox]
+  \begin{posterblock}[myblock]
     \centering
     I am a poster block with a fancy style!
   \end{posterblock}
@@ -174,7 +174,7 @@
 
 \end{postercolumns}
 
-\begin{logobox}[mylogobox]
+\begin{logobar}[mylogobar]
   \centering
   \fbox{\huge \bfseries LOGO 1}
   \hfill
@@ -183,7 +183,7 @@
   \fbox{\huge \bfseries LOGO 3}
   \hfill
   \fbox{\huge \bfseries LOGO 4}
-\end{logobox}
+\end{logobar}
 
 \end{poster}
 
