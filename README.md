@@ -174,14 +174,14 @@ Finally, the posterblock, posterblockH, posterblockW, posterblockWFill, and logo
 
 ### Poster Themes
 
-Instead of writing your layout tweaks directly into your main LaTeX code, you can also place them inside an external __theme file__.
-To apply the theme to your poster, use the following command after you started the poster environment:
+Instead of adding your layout tweaks to your poster code, you can also place them inside an external __theme file__.
+To apply the theme to your poster, use the following command after you opened the poster environment:
 
     \setpostertheme{T}
 
 where T is the path to the file containing the layout tweaks. 
 
-**The following file represents the default theme:**
+Example file that represents the default theme:
 
     \tikzset{
       % default style for poster block
