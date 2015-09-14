@@ -1,4 +1,4 @@
-# The MSP Poster Package
+# The MSP poster package
 
 ## Introduction
 
@@ -172,7 +172,7 @@ Finally, the posterblock, posterblockH, posterblockW, posterblockWFill, and logo
        ...
     \end{logobar}
 
-### Poster Themes
+### Poster themes
 
 Instead of adding your layout tweaks to your poster code, you can also place them inside an external __theme file__.
 To apply the theme to your poster, use the following command after you opened the poster environment:
