@@ -172,36 +172,48 @@ Finally, the posterblock, posterblockH, posterblockW, posterblockWFill, and logo
        ...
     \end{logobar}
 
-**The following settings are used by default:**
+### Poster Themes
 
-    % default style for poster block
-    posterblock/.style={
-      opacity=0.5,
-      text opacity=1.0,
-      fill=white,
-      draw,
-      ultra thick,
-      rounded corners
-    }
+Instead of adding your layout tweaks to your poster code, you can also place them inside an external __theme file__.
+To apply the theme to your poster, use the following command after you opened the poster environment:
 
-    % default style for logo bar
-    logobar/.style={
-      align=center,
-      minimum width=\paperwidth + 10pt,
-      text width=\textwidth,
-      fill=white,
-      draw=black,
-      ultra thick,
-      decoration=random steps,
-      decorate,
-      inner sep=5
+    \setpostertheme{T}
+
+where T is the path to the file containing the layout tweaks. 
+
+Example file that represents the default theme:
+
+    \tikzset{
+      % default style for poster block
+      posterblock/.style={
+        opacity=0.5,
+        text opacity=1.0,
+        fill=white,
+        draw,
+        ultra thick,
+        rounded corners
+      }
+      ,
+      % default style for logo bar
+      logobar/.style={
+        align=center,
+        % make the bar a little bit wider than the paper width,
+        % such that the left and right borders are not visible
+        minimum width=\paperwidth + 10pt,
+        text width=\textwidth,
+        fill=white,
+        draw=black,
+        ultra thick,
+        decoration=random steps,
+        decorate,
+        inner sep=5
+      }
     }
 
     \setmargins{20}{20}
     \setblockpadding{10}
     \setblockspacing{20}
     \shadebackground{red!30}{orange!40}
-    
 
 ## Limitations
 
