@@ -1,6 +1,10 @@
 # LaTeX
 poster*
 
+# Rendering checking
+README.md.html
+README.html 
+
 # OSX
 .DS_Store
 
