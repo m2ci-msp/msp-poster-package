@@ -11,7 +11,7 @@ The package uses [PGF and TikZ] to automatically generate the layout of the post
 
 The package is licensed under *The LaTeX Project Public License*.
 
-See LICENSE.md and mspposter.sty for more details.
+See [LICENSE.md] and [mspposter.sty] for more details.
 
 ## Using the package
 
@@ -467,3 +467,5 @@ Resulting poster:
 [TeX Stackexchange]: http://tex.stackexchange.com/questions/23411/tikzpicture-in-node-of-another-tikzpicture-how-to-screen-of-from-inheriting-sty "TeX Stackexchange"
 [Standalone package]: https://www.ctan.org/pkg/standalone  "Standalone package"
 [Example]: poster.jpg
+[LICENSE.md]: LICENSE.md
+[mspposter.sty]: mspposter.sty
