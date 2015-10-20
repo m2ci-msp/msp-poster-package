@@ -3,7 +3,7 @@ poster*
 
 # Rendering checking
 README.md.html
-README.html 
+README.html
 
 # OSX
 .DS_Store
@@ -11,3 +11,6 @@ README.html
 # backup
 *.bak
 *.swp
+
+# Emacs
+auto
