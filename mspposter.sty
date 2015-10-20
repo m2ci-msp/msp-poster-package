@@ -117,7 +117,7 @@
     \pgfooset{currentColumn}{\pgfoovalueof{columnAmount}}
     % compute remaining space to right boundary
     \gettikzxy{(blockanchor)}{\vx}{\vy}
-    \pgfmathparse{veclen(0.5 * \textwidth - \vx, 0) - 2 * \pgfoovalueof{blockPadding}} 
+    \pgfmathparse{veclen(0.5 * \textwidth - \vx, 0) - 2 * \pgfoovalueof{blockPadding}}
     \let\currentWidth\pgfmathresult
     % try to close any open block
     \pgfoothis.closeBlock()
@@ -143,7 +143,7 @@
       % keep track of largest y value
       \path let
         \p1 = (largesty),
-        \p2 = (current.south) 
+        \p2 = (current.south)
         in \ifdim \y2 < \y1 coordinate (largesty) at (\x1, \y2)\fi;
       % set flag to false
       \pgfooset{blockOpen}{false}%
@@ -187,8 +187,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   \method nextRow(){
-    % move base anchor to next row 
-    \coordinate (baseanchor) at (largesty -| baseanchor); 
+    % move base anchor to next row
+    \coordinate (baseanchor) at (largesty -| baseanchor);
     % initialize block anchor to first column
     \coordinate [below=\pgfoovalueof{blockSpacing}pt of baseanchor] (blockanchor);
     % return to first column
@@ -225,7 +225,7 @@
           - 2 * \pgfoovalueof{columnAmount} * \pgfoovalueof{blockPadding}
           - ( \pgfoovalueof{columnAmount} - 1) * \pgfoovalueof{blockSpacing}
           ) / \pgfoovalueof{columnAmount}
-    } 
+    }
     \pgfoolet{columnWidth}{\pgfmathresult}
   }
 
@@ -258,7 +258,7 @@
   \method setColumns(#1) {
     % try to close any open block
     \pgfoothis.closeBlock()
-    % set column amount 
+    % set column amount
     \pgfooset{columnAmount}{#1}
     % return to first column after change
     \pgfooset{currentColumn}{1}
@@ -512,10 +512,9 @@
   \setmargins{20}{20}
   \setblockpadding{10}
   \setblockspacing{20}
-  \shadebackground{red!30}{orange!40}
 }{%
   \poster.closeBlock()
   \end{tikzpicture}%
-} 
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
