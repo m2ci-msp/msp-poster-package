@@ -208,14 +208,15 @@ To apply the theme to your poster, use the following command after you opened th
 \setpostertheme{T}
 ```
 
-where T is the path to the file containing the layout tweaks.
+where T is the path to the file containing the layout tweaks. **It is important that this command is
+inserted just after opening the poster environment**.
 
-Example file that represents the default theme:
+Example file that represents the default theme is presente in [themes/default]:
 
 ```latex
 \tikzset{
   % default style for poster block
-  posterblock/.style={
+  block/.style={
     opacity=0.5,
     text opacity=1.0,
     fill=white,
@@ -264,6 +265,7 @@ Example file that represents the default theme:
 ## Example
 
 Example poster file:
+
 ```latex
 \documentclass[a4paper, 11pt]{article}
 \usepackage{mspposter}
@@ -281,56 +283,32 @@ Example poster file:
 \renewcommand{\section}{\vspace{-10pt}\oldsection}
 
 % create custom styles
-\tikzset{
-  myblock/.style={
-    ultra thick,
-    decoration=random steps,
-    decorate,
-    draw,
-    fill=white,
-    opacity=0.5,
-    text opacity=1.0
-  },
-  mylogobar/.style={
-    minimum width=\paperwidth + 10pt,
-    text width=\textwidth,
-    fill=white,
-    draw=black,
-    ultra thick,
-    decoration=random steps,
-    decorate,
-    inner sep=5
-  }
-}
 
 \begin{document}
 
 \begin{poster}
 
-% tweak layout
-\setblockpadding{20}
-\setblockspacing{15}
-\setmargins{15}{15}
-\shadebackground{red!40}{blue!30}
+% Set themes
+\setpostertheme{themes/default}
 
 \begin{posterrows}[4]
 
-  \begin{posterblock}[myblock]
+  \begin{posterblock}[block]
     \centering
     I am a poster block with a fancy style!
   \end{posterblock}
 
-  \begin{posterblock}[myblock]
+  \begin{posterblock}[block]
     \centering
     I am a poster block with a fancy style!
   \end{posterblock}
 
-  \begin{posterblock}[myblock]
+  \begin{posterblock}[block]
     \centering
     I am a poster block with a fancy style!
   \end{posterblock}
 
-  \begin{posterblock}[myblock]
+  \begin{posterblock}[block]
     \centering
     I am a poster block with a fancy style!
   \end{posterblock}
@@ -441,7 +419,7 @@ Example poster file:
 
 \end{postercolumns}
 
-\begin{logobar}[mylogobar]
+\begin{logobar}[logobar]
   \centering
   \fbox{\huge \bfseries LOGO 1}
   \hfill
