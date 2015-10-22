@@ -216,16 +216,16 @@ Example file that represents the default theme applied when using [themes/defaul
 ```latex
 \tikzset{
   title/.style={
-  drop shadow,
-  draw=black,
+    drop shadow,
+    draw=black,
     opacity=1.0,
     text opacity=1.0,
     fill=brown!20,
     rounded corners
   },
   posterblock/.style={
-  drop shadow,
-  draw=black,
+    drop shadow,
+    draw=black,
     opacity=1.0,
     text opacity=1.0,
     fill=brown!20,
