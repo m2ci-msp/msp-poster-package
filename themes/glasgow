@@ -1,0 +1,43 @@
+\tikzset{
+  title/.style={
+    opacity=0.7,
+    text opacity=1.0,
+    fill=white,
+    rounded corners,
+    anchor=north
+  },
+  posterblock/.style={
+    opacity=0.7,
+    text opacity=1.0,
+    fill=white,
+    rounded corners
+  },
+  logobar/.style={
+    minimum width=\paperwidth + 10pt,
+    text width=\textwidth,
+    fill=white,
+    decoration=random steps,
+    decorate,
+    inner sep=5
+  }
+}
+
+% tweak layout
+\setmargins{15}{15}
+\setblockpadding{20}
+\setblockspacing{15}
+\shadebackground{red!40}{blue!70}
+
+
+\makeatletter
+\renewcommand{\maketitle}{
+    \begin{posterblock}[title]
+        \begin{center}
+            {\huge{\bf{\@title}}} \\
+            \vspace{5pt}
+            {\large\@author}
+        \end{center}
+
+    \end{posterblock}
+}
+\makeatother
