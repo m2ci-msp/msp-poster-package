@@ -23,7 +23,7 @@
 
 \usepackage{tabularx}
 \usepackage{multicol}
-\newcolumntype{C}[1]{>{\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
 
 
 \title{Example poster for the msp poster package}
@@ -31,9 +31,9 @@
     Alexander Hewer\textsuperscript{1-2}, Ingmar Steiner\textsuperscript{1-3}, Sébastien Le Maguer\textsuperscript{1,3}                                       \\
     \vspace{12pt}
     {\def\arraystretch{1.5}
-    \begin{tabular}{C{10cm} C{10cm}}
+    \begin{tabular}{C{0.35\textwidth} C{0.35\textwidth}}
       \textsuperscript{1}\textit{Cluster of Excellence MMCI, Saarland University} & \textsuperscript{2}\textit{DFKI Language Technology Lab, Saarbr\"{u}cken} \\
-      \multicolumn{2}{c}{\textsuperscript{3}\textit{Computer linguistic department, University of Saarland}}                                                  \\
+      \multicolumn{2}{c}{\textsuperscript{3}\textit{Computational Linguistics \& Phonetics, Saarland University}}                                                  \\
     \end{tabular}
     }
 }
@@ -99,7 +99,7 @@
             This poster block has a fixed height and width.
         \end{posterblockW}
 
-        \begin{posterblockWFill}{25}
+        \begin{posterblockWFill}{35}
             \section{Right Box}
             Here, the poster block uses the remaining space that is available on the current row.
             Like the left block, it has a fixed height.
