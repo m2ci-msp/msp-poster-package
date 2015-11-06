@@ -3,8 +3,7 @@
     opacity=0.7,
     text opacity=1.0,
     fill=white,
-    rounded corners,
-    anchor=north
+    rounded corners
   },
   posterblock/.style={
     opacity=0.7,
