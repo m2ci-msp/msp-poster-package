@@ -460,7 +460,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % main environment
-\newenvironment{poster}{%
+\newenvironment{poster}[1][themes/default]{%
 
   \parindent0pt
   % fill the whole page
@@ -480,6 +480,8 @@
 
   % create poster object
   \pgfoonew \poster=new poster()
+
+  \setpostertheme{#1}
 
 }{%
   \poster.closeBlock()
