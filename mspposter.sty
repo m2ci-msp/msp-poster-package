@@ -60,7 +60,6 @@
   \attribute columnWidth=20;
   \attribute topMargin=20;
   \attribute blockSpacing=20;
-  \attribute blockOpen=false;
   \attribute columnAmount=1;
   \attribute currentColumn=1;
   \attribute blockPadding=10;
@@ -77,11 +76,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   \method openBlock(#1) {
-    \pgfoothis.closeBlock()
     \pgfooget{columnWidth}{\currentWidth}
     \pgfooget{blockPadding}{\currentPadding}
-    % set flag to true
-    \pgfooset{blockOpen}{true}
     \node [
       #1,
       inner sep=\currentPadding pt,
@@ -96,11 +92,7 @@
     % this is a block with custom width -> do not count it as a usual column
     \pgfmathparse{int(\pgfoovalueof{currentColumn} - 1)}
     \pgfoolet{currentColumn}{\pgfmathresult}
-    % try to close any open block
-    \pgfoothis.closeBlock()
     \pgfooget{blockPadding}{\currentPadding}
-    % set flag to true
-    \pgfooset{blockOpen}{true}
     \node [
       #1,
       inner sep=\currentPadding pt,
@@ -118,10 +110,6 @@
     \gettikzxy{(blockanchor)}{\vx}{\vy}
     \pgfmathparse{veclen(0.5 * \textwidth - \vx, 0) - 2 * \pgfoovalueof{blockPadding}}
     \let\currentWidth\pgfmathresult
-    % try to close any open block
-    \pgfoothis.closeBlock()
-    % set flag to true
-    \pgfooset{blockOpen}{true}
     \pgfooget{blockPadding}{\currentPadding}
     \node [
       #1,
@@ -134,25 +122,19 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   \method closeBlock(){
-    % only close block if it is open
-    \ifthenelse{\equal{\pgfoovalueof{blockOpen}}{true}}
-    {%
-      \egroup;
-      % keep track of largest y value
-      \path let
-        \p1 = (largesty),
-        \p2 = (current.south)
-        in \ifdim \y2 < \y1 coordinate (largesty) at (\x1, \y2)\fi;
-      % set flag to false
-      \pgfooset{blockOpen}{false}%
-      % update internal state depending on chosen placement mode
-      \ifthenelse{\equal{\pgfoovalueof{placementMode}}{rowFirst}}{%
-        \pgfoothis.updateStateRow()
-      }{%
-        % else
-        \pgfoothis.updateStateColumn()
-      }
-    }%
+    \egroup;
+    % keep track of largest y value
+    \path let
+      \p1 = (largesty),
+      \p2 = (current.south)
+      in \ifdim \y2 < \y1 coordinate (largesty) at (\x1, \y2)\fi;
+    % update internal state depending on chosen placement mode
+    \ifthenelse{\equal{\pgfoovalueof{placementMode}}{rowFirst}}{%
+      \pgfoothis.updateStateRow()
+    }{%
+      % else
+      \pgfoothis.updateStateColumn()
+    }
   }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -254,8 +236,6 @@
 
   % set amount of columns
   \method setColumns(#1) {
-    % try to close any open block
-    \pgfoothis.closeBlock()
     % set column amount
     \pgfooset{columnAmount}{#1}
     % return to first column after change
@@ -484,7 +464,6 @@
   \setpostertheme{#1}
 
 }{%
-  \poster.closeBlock()
   \end{tikzpicture}%
 }
 
