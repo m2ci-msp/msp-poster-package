@@ -140,18 +140,18 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   \method updateStateRow() {
-      % check if we are at the last column
-      \ifthenelse{\equal{\pgfoovalueof{columnAmount}}{\pgfoovalueof{currentColumn}}}{%
-        % yes, move to next row
-        \pgfoothis.nextRow()%
-      }{%
-        % no, increment column number and move to next column
-        \path let
-          \p1 = (current.north east)
-          in coordinate (blockanchor) at (\x1 + \pgfoovalueof{blockSpacing}pt, \y1);
-        \pgfmathparse{int(\pgfoovalueof{currentColumn} + 1)}
-        \pgfoolet{currentColumn}{\pgfmathresult}
-      }%
+    % check if we are at the last column
+    \ifthenelse{\equal{\pgfoovalueof{columnAmount}}{\pgfoovalueof{currentColumn}}}{%
+      % yes, move to next row
+      \pgfoothis.nextRow()%
+    }{%
+      % no, increment column number and move to next column
+      \path let
+        \p1 = (current.north east)
+        in coordinate (blockanchor) at (\x1 + \pgfoovalueof{blockSpacing}pt, \y1);
+      \pgfmathparse{int(\pgfoovalueof{currentColumn} + 1)}
+      \pgfoolet{currentColumn}{\pgfmathresult}
+    }%
   }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -200,11 +200,11 @@
   \method computeColumnWidth() {
     % derive the column width by using the amount of columns, textwidth,
     % block padding, and the block spacing
-  \pgfmathparse{ (
-          \textwidth
-          - 2 * \pgfoovalueof{columnAmount} * \pgfoovalueof{blockPadding}
-          - ( \pgfoovalueof{columnAmount} - 1) * \pgfoovalueof{blockSpacing}
-          ) / \pgfoovalueof{columnAmount}
+    \pgfmathparse{ (
+      \textwidth
+      - 2 * \pgfoovalueof{columnAmount} * \pgfoovalueof{blockPadding}
+      - ( \pgfoovalueof{columnAmount} - 1) * \pgfoovalueof{blockSpacing}
+      ) / \pgfoovalueof{columnAmount}
     }
     \pgfoolet{columnWidth}{\pgfmathresult}
   }
