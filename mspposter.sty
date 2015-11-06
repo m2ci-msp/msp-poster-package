@@ -83,7 +83,6 @@
     % set flag to true
     \pgfooset{blockOpen}{true}
     \node [
-      text width=\currentWidth pt,
       #1,
       inner sep=\currentPadding pt,
       anchor=north west] at (blockanchor)
@@ -93,7 +92,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  \method openBlockW(#1,#2){
+  \method openBlockW(#1){
     % this is a block with custom width -> do not count it as a usual column
     \pgfmathparse{int(\pgfoovalueof{currentColumn} - 1)}
     \pgfoolet{currentColumn}{\pgfmathresult}
@@ -103,7 +102,6 @@
     % set flag to true
     \pgfooset{blockOpen}{true}
     \node [
-      text width=#2,
       #1,
       inner sep=\currentPadding pt,
       anchor=north west] at (blockanchor)
@@ -126,7 +124,6 @@
     \pgfooset{blockOpen}{true}
     \pgfooget{blockPadding}{\currentPadding}
     \node [
-      text width=\currentWidth pt,
       #1,
       inner sep=\currentPadding pt,
       anchor=north west] at (blockanchor)
@@ -377,7 +374,7 @@
   % ignore leading white space
   \ignorespaces
   % place content inside a minipage
-  \begin{minipage}{\textwidth}%
+  \begin{minipage}{\currentWidth pt}%
 }
 {%
   \end{minipage}%
@@ -387,12 +384,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newenvironment{posterblockW}[3][posterblock]{
-  % open row block with the specified width
-  \poster.openBlockW(#1,#2)%
+  % open row block with custom width
+  \poster.openBlockW(#1)%
   % ignore leading white space
   \ignorespaces
-  % place content inside a minipage with specified height
-  \begin{minipage}[c][#3pt][t]{\textwidth}%
+  % place content inside a minipage with specified height and width
+  \begin{minipage}[c][#3pt][t]{#2 pt}%
 }
 {%
   \end{minipage}%
@@ -406,8 +403,9 @@
   \poster.openBlockWFill(#1)%
   % ignore leading white space
   \ignorespaces
-  % place content inside a minipage with specified height
-  \begin{minipage}[c][#2pt][t]{\textwidth}%
+  % place content inside a minipage with specified height and current text
+  % width
+  \begin{minipage}[c][#2pt][t]{\currentWidth pt}%
 }
 {%
   \end{minipage}%
@@ -420,8 +418,9 @@
   \poster.openBlock(#1)%
   % ignore leading white space
   \ignorespaces
-  % place content inside a minipage with fixed height
-  \begin{minipage}[c][#2pt][t]{\textwidth}%
+  % place content inside a minipage with specified height and current text
+  % width
+  \begin{minipage}[c][#2pt][t]{\currentWidth pt}%
 }
 {%
   \end{minipage}%
