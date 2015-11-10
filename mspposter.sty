@@ -39,10 +39,10 @@
   \tikz@scan@one@point\pgfutil@firstofone#1\relax
   \edef#2{\the\pgf@x}%
   \edef#3{\the\pgf@y}%
-  }
+}
 \makeatother
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % class for poster
 \pgfooclass{poster}{
@@ -67,13 +67,13 @@
 
   % METHODS
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   \method setPlacementMode(#1) {
     \pgfooset{placementMode}{#1}
   }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   \method openBlock(#1) {
     \pgfooget{columnWidth}{\currentWidth}
@@ -81,12 +81,11 @@
     \node [
       #1,
       inner sep=\currentPadding pt,
-      anchor=north west] at (blockanchor)
-      (current)
-      \bgroup
+      anchor=north west] at (blockanchor) (current)
+    \bgroup
   }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   \method openBlockW(#1){
     % this is a block with custom width -> do not count it as a usual column
@@ -96,12 +95,11 @@
     \node [
       #1,
       inner sep=\currentPadding pt,
-      anchor=north west] at (blockanchor)
-      (current)
-      \bgroup
+      anchor=north west] at (blockanchor) (current)
+    \bgroup
   }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   \method openBlockWFill(#1){
     % indicate that this is the last column on the row
@@ -114,20 +112,19 @@
     \node [
       #1,
       inner sep=\currentPadding pt,
-      anchor=north west] at (blockanchor)
-      (current)
-      \bgroup
+      anchor=north west] at (blockanchor) (current)
+    \bgroup
   }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   \method closeBlock(){
     \egroup;
     % keep track of largest y value
     \path let
-      \p1 = (largesty),
-      \p2 = (current.south)
-      in \ifdim \y2 < \y1 coordinate (largesty) at (\x1, \y2)\fi;
+    \p1 = (largesty),
+    \p2 = (current.south)
+    in \ifdim \y2 < \y1 coordinate (largesty) at (\x1, \y2)\fi;
     % update internal state depending on chosen placement mode
     \ifthenelse{\equal{\pgfoovalueof{placementMode}}{rowFirst}}{%
       \pgfoothis.updateStateRow()
@@ -137,45 +134,47 @@
     }
   }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   \method updateStateRow() {
     % check if we are at the last column
-    \ifthenelse{\equal{\pgfoovalueof{columnAmount}}{\pgfoovalueof{currentColumn}}}{%
+    \ifthenelse{%
+      \equal{\pgfoovalueof{columnAmount}}{\pgfoovalueof{currentColumn}}}{%
       % yes, move to next row
       \pgfoothis.nextRow()%
     }{%
       % no, increment column number and move to next column
       \path let
-        \p1 = (current.north east)
-        in coordinate (blockanchor) at (\x1 + \pgfoovalueof{blockSpacing}pt, \y1);
+      \p1 = (current.north east)
+      in coordinate (blockanchor) at (\x1 + \pgfoovalueof{blockSpacing}pt, \y1);
       \pgfmathparse{int(\pgfoovalueof{currentColumn} + 1)}
       \pgfoolet{currentColumn}{\pgfmathresult}
     }%
   }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   \method updateStateColumn() {
     % move to next row
     \path let
-      \p1 = (current.south west)
-        in coordinate (blockanchor) at (\x1, \y1 - \pgfoovalueof{blockSpacing}pt);
+    \p1 = (current.south west)
+    in coordinate (blockanchor) at (\x1, \y1 - \pgfoovalueof{blockSpacing}pt);
   }
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   \method nextRow(){
     % move base anchor to next row
     \coordinate (baseanchor) at (largesty -| baseanchor);
     % initialize block anchor to first column
-    \coordinate [below=\pgfoovalueof{blockSpacing}pt of baseanchor] (blockanchor);
-    % return to first column
-    \pgfooset{currentColumn}{1}
+    \coordinate
+        [below=\pgfoovalueof{blockSpacing}pt of baseanchor] (blockanchor);
+        % return to first column
+        \pgfooset{currentColumn}{1}
   }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   \method nextColumn(){
     % increment currentColumn
@@ -184,18 +183,18 @@
     % compute x-offset to base anchor
     \pgfmathparse{
       (\pgfoovalueof{currentColumn} - 1) * (
-        \pgfoovalueof{columnWidth} + \pgfoovalueof{blockSpacing} +
-        2 * \pgfoovalueof{blockPadding}
-        )
+      \pgfoovalueof{columnWidth} + \pgfoovalueof{blockSpacing} +
+      2 * \pgfoovalueof{blockPadding}
+      )
     }
     % set block anchor for column
     \path let
-      \p1 = (baseanchor)
-      in coordinate (blockanchor) at
-        (\x1 + \pgfmathresult pt, \y1 - \pgfoovalueof{blockSpacing});
+    \p1 = (baseanchor)
+    in coordinate (blockanchor) at
+    (\x1 + \pgfmathresult pt, \y1 - \pgfoovalueof{blockSpacing});
   }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   \method computeColumnWidth() {
     % derive the column width by using the amount of columns, textwidth,
@@ -209,30 +208,31 @@
     \pgfoolet{columnWidth}{\pgfmathresult}
   }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   % initializes data structures for current poster block container
   \method initRows(#1,#2){
     \pgfooset{placementMode}{#2}
     \pgfoothis.setColumns(#1)
-    \coordinate [below=\pgfoovalueof{blockSpacing}pt of baseanchor] (blockanchor);
+    \coordinate
+        [below=\pgfoovalueof{blockSpacing}pt of baseanchor] (blockanchor);
   }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   \method setBlockPadding(#1) {
     \pgfooset{blockPadding}{#1}
     \pgfoothis.updateLayout()
   }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   \method setBlockSpacing(#1) {
     \pgfooset{blockSpacing}{#1}
     \pgfoothis.updateLayout()
   }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   % set amount of columns
   \method setColumns(#1) {
@@ -244,7 +244,7 @@
     \pgfoothis.computeColumnWidth()%
   }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   \method setMargins(#1,#2) {
     % modify text width such that poster is centered
@@ -254,29 +254,32 @@
     \pgfoothis.updateLayout()
   }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   \method updateLayout() {
     \pgfoothis.computeColumnWidth()
     \pgfoothis.setupAnchors()
   }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   \method setupAnchors() {
     % initialize the anchors
     % compute y-coordinate for all anchors,
     % add blockSpacing to each y-coordinate, it is removed by the first block
-    \pgfmathparse{ 0.5\paperheight + \pgfoovalueof{blockSpacing} - \pgfoovalueof{topMargin}}
+    \pgfmathparse{
+      0.5\paperheight + \pgfoovalueof{blockSpacing} - \pgfoovalueof{topMargin}}
     % anchor for keeping track of largest y-value
     \coordinate (largesty) at (0, \pgfmathresult pt);
-    % base anchor that is used to derive the actual anchors for the poster blocks
+    % base anchor that is used to derive the actual anchors for
+    % the poster blocks
     \coordinate (baseanchor) at (-0.5 * \textwidth, \pgfmathresult pt);
     % initialize first block anchor
-    \coordinate [below=\pgfoovalueof{blockSpacing}pt of baseanchor] (blockanchor);
+    \coordinate
+        [below=\pgfoovalueof{blockSpacing}pt of baseanchor] (blockanchor);
   }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   \method shadeBackground(#1,#2) {
     \begin{scope}[on background layer]
@@ -285,35 +288,35 @@
     \end{scope}
   }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 }% end poster class
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newcommand{\setblockpadding}[1] {
   \poster.setBlockPadding(#1)
 }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newcommand{\setblockspacing}[1] {
   \poster.setBlockSpacing(#1)
 }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newcommand{\setmargins}[2] {
   \poster.setMargins(#1,#2)
 }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newcommand{\shadebackground}[2] {
   \poster.shadeBackground(#1,#2)
 }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newcommand{\setbackground}[1] {
   \begin{scope}[on background layer]
@@ -323,7 +326,7 @@
   \end{scope}
 }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % row first container
 \newenvironment{posterrows}[1][1]{
@@ -335,7 +338,7 @@
   \poster.setPlacementMode(rowFirst)
 }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % column first container
 \newenvironment{postercolumns}[1][1]{
@@ -347,7 +350,7 @@
   \poster.setPlacementMode(rowFirst)
 }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newenvironment{posterblock}[1][posterblock]{
   \poster.openBlock(#1)%
@@ -355,13 +358,12 @@
   \ignorespaces
   % place content inside a minipage
   \begin{minipage}{\currentWidth pt}%
-}
-{%
+}{%
   \end{minipage}%
   \poster.closeBlock()
 }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newenvironment{posterblockW}[3][posterblock]{
   % open row block with custom width
@@ -370,13 +372,12 @@
   \ignorespaces
   % place content inside a minipage with specified height and width
   \begin{minipage}[c][#3pt][t]{#2 pt}%
-}
-{%
+}{%
   \end{minipage}%
   \poster.closeBlock()
 }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newenvironment{posterblockWFill}[2][posterblock]{
   % open row block and use the remaining horizontal space as width
@@ -386,13 +387,12 @@
   % place content inside a minipage with specified height and current text
   % width
   \begin{minipage}[c][#2pt][t]{\currentWidth pt}%
-}
-{%
+}{%
   \end{minipage}%
   \poster.closeBlock()
 }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newenvironment{posterblockH}[2][posterblock]{
   \poster.openBlock(#1)%
@@ -401,19 +401,18 @@
   % place content inside a minipage with specified height and current text
   % width
   \begin{minipage}[c][#2pt][t]{\currentWidth pt}%
-}
-{%
+}{%
   \end{minipage}%
   \poster.closeBlock()
 }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newcommand{\posternextcolumn}{
   \poster.nextColumn()
 }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newenvironment{logobar}[1][logobar]{
   \begin{scope}[on background layer]
@@ -424,24 +423,22 @@
     \ignorespaces
     % place content inside a minipage
     \begin{minipage}{\textwidth}%
-}
-{%
-  \end{minipage}%
-  \egroup;
+}{%
+    \end{minipage}%
+    \egroup;
   \end{scope}
 }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newcommand{\setpostertheme}[1]{
   \input{#1}
 }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % main environment
 \newenvironment{poster}[1][themes/default]{%
-
   \parindent0pt
   % fill the whole page
   \begin{tikzpicture}
@@ -457,28 +454,25 @@
       every node/.style={
         outer sep=0
     }]
-
-  % create poster object
-  \pgfoonew \poster=new poster()
-
-  \setpostertheme{#1}
-
+    % create poster object
+    \pgfoonew \poster=new poster()
+    \setpostertheme{#1}
 }{%
   \end{tikzpicture}%
 }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \makeatletter
 \renewcommand{\maketitle}{
-    \begin{posterblock}
-        \begin{center}
+  \begin{posterblock}
+    \begin{center}
 
-        {\huge{\bf{\@title}}} \\
-        \vspace{6pt}
-        {\large\@author}
+      {\huge{\bf{\@title}}} \\
+      \vspace{6pt}
+             {\large\@author}
     \end{center}
 
-    \end{posterblock}
+  \end{posterblock}
 }
 \makeatother
