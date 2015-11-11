@@ -431,12 +431,6 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\newcommand{\setpostertheme}[1]{
-  \input{#1}
-}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 % main environment
 \newenvironment{poster}[1][themes/default]{%
   \parindent0pt
@@ -456,7 +450,7 @@
     }]
     % create poster object
     \pgfoonew \poster=new poster()
-    \setpostertheme{#1}
+    \input{#1}
 }{%
   \end{tikzpicture}%
 }
