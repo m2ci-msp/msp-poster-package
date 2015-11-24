@@ -1,0 +1,38 @@
+\definecolor{mmci}{rgb}{0,0.46,0.75}
+
+\tikzset{
+  posterblock/.style={
+  draw=black,
+    opacity=1.0,
+    text opacity=1.0,
+    fill=white
+  },
+  title/.style={
+    fill=mmci,
+    draw=mmci,
+    text=white
+  },
+  logobar/.style={
+    minimum width=\paperwidth + 10pt,
+    text width=\textwidth,
+    draw=mmci,
+    inner sep=5
+  }
+}
+
+% tweak layout
+\setmargins{15}{15}
+\setblockpadding{20}
+\setblockspacing{15}
+
+\makeatletter
+\renewcommand{\maketitle}{
+    \begin{posterblock}[title]
+        \begin{center}
+            {\huge{\bf{\@title}}} \\
+            \vspace{5pt}
+            {\large\@author}
+        \end{center}
+    \end{posterblock}
+}
+\makeatother
