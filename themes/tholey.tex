@@ -3,21 +3,24 @@
     opacity=0.7,
     text opacity=1.0,
     fill=white,
+    thin,
     rounded corners,
-    anchor=north
+    draw
   },
   posterblock/.style={
     opacity=0.7,
     text opacity=1.0,
     fill=white,
-    rounded corners
+    thin,
+    rounded corners,
+    draw
   },
   logobar/.style={
     minimum width=\paperwidth + 10pt,
     text width=\textwidth,
+    draw,
+    thin,
     fill=white,
-    decoration=random steps,
-    decorate,
     inner sep=5
   }
 }
@@ -26,8 +29,7 @@
 \setmargins{15}{15}
 \setblockpadding{20}
 \setblockspacing{15}
-\shadebackground{red!40}{blue!70}
-
+\shadebackground{red!30}{orange!30}
 
 \makeatletter
 \renewcommand{\maketitle}{
@@ -37,7 +39,6 @@
             \vspace{5pt}
             {\large\@author}
         \end{center}
-
     \end{posterblock}
 }
 \makeatother
