@@ -1,2 +1,2 @@
-% use saarbruecken theme as default one
-\input{themes/saarbruecken}
+% use tholey theme as default one
+\input{themes/tholey}
