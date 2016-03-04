@@ -20,8 +20,7 @@
 
 \RequirePackage{ifthen}
 \RequirePackage{tikz}
-% remove all margins
-\RequirePackage[hmargin=0pt, vmargin=0pt, bindingoffset=0pt]{geometry}
+\RequirePackage[pass]{geometry}
 
 \usetikzlibrary{
   calc,
@@ -433,6 +432,8 @@
 
 % main environment
 \newenvironment{poster}[1][themes/default]{%
+  % remove all margins
+  \newgeometry[hmargin=0pt, vmargin=0pt, bindingoffset=0pt]
   \parindent0pt
   % fill the whole page
   \begin{tikzpicture}
@@ -453,6 +454,8 @@
     \input{#1}
 }{%
   \end{tikzpicture}%
+  % restore old layout
+  \restoregeometry
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
