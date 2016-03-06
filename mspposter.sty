@@ -1,5 +1,5 @@
 %% mspposter.sty
-%% Copyright 2015 Alexander Hewer
+%% Copyright 2016 Alexander Hewer
 %
 % This work may be distributed and/or modified under the
 % conditions of the LaTeX Project Public License, either version 1.3
@@ -20,8 +20,7 @@
 
 \RequirePackage{ifthen}
 \RequirePackage{tikz}
-% remove all margins
-\RequirePackage[hmargin=0pt, vmargin=0pt, bindingoffset=0pt]{geometry}
+\RequirePackage[pass]{geometry}
 
 \usetikzlibrary{
   calc,
@@ -320,9 +319,7 @@
 
 \newcommand{\setbackground}[1] {
   \begin{scope}[on background layer]
-    \node[inner sep=0] at (0, 0) {
-      #1
-    };
+    \node[inner sep=0] at (0, 0) {#1};
   \end{scope}
 }
 
@@ -433,6 +430,8 @@
 
 % main environment
 \newenvironment{poster}[1][themes/default]{%
+  % remove all margins
+  \newgeometry{hmargin=0pt, vmargin=0pt, bindingoffset=0pt}
   \parindent0pt
   % fill the whole page
   \begin{tikzpicture}
@@ -453,6 +452,9 @@
     \input{#1}
 }{%
   \end{tikzpicture}%
+  % restore old layout
+  % http://tex.stackexchange.com/questions/136089/change-page-margin-inside-own-environment
+  \restoregeometry\aftergroup\restoregeometry
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
