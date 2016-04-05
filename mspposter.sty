@@ -458,3 +458,37 @@
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% special environment for shifting the poster
+% arg1: theme
+% arg2: right shift
+% arg3: down shift
+\newenvironment{shiftedposter}[3][themes/default]{%
+  % remove all margins
+  \newgeometry{hmargin=0pt, vmargin=0pt, bindingoffset=0pt}
+  \parindent0pt
+  % fill the whole page
+  \begin{tikzpicture}
+    \node[fill=white,
+      anchor=north west,
+      minimum width=\paperwidth,
+      minimum height=\paperheight] {};
+  \end{tikzpicture}%
+  % open the actual tikz picture environment for the poster
+  \begin{tikzpicture}[overlay,
+      % shift origin of coordinate system
+      shift={(-0.5\paperwidth + #2,0.5\paperheight - #3)},
+      every node/.style={
+        outer sep=0
+    }]
+    % create poster object
+    \pgfoonew \poster=new poster()
+    \input{#1}
+}{%
+  \end{tikzpicture}%
+  % restore old layout
+  % http://tex.stackexchange.com/questions/136089/change-page-margin-inside-own-environment
+  \restoregeometry\aftergroup\restoregeometry
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
