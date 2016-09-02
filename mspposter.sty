@@ -63,8 +63,16 @@
   \attribute currentColumn=1;
   \attribute blockPadding=10;
   \attribute placementMode=rowFirst;
+  \attribute currentID=1;
 
   % METHODS
+
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  \method incrementID() {
+    \pgfmathparse{int(\pgfoovalueof{currentID} + 1)}
+    \pgfoolet{currentID}{\pgfmathresult}
+  }
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -77,10 +85,11 @@
   \method openBlock(#1) {
     \pgfooget{columnWidth}{\currentWidth}
     \pgfooget{blockPadding}{\currentPadding}
+    \pgfooget{currentID}{\currentID}
     \node [
       #1,
       inner sep=\currentPadding pt,
-      anchor=north west] at (blockanchor) (current)
+      anchor=north west] at (blockanchor) (\currentID)
     \bgroup
   }
 
@@ -91,10 +100,11 @@
     \pgfmathparse{int(\pgfoovalueof{currentColumn} - 1)}
     \pgfoolet{currentColumn}{\pgfmathresult}
     \pgfooget{blockPadding}{\currentPadding}
+    \pgfooget{currentID}{\currentID}
     \node [
       #1,
       inner sep=\currentPadding pt,
-      anchor=north west] at (blockanchor) (current)
+      anchor=north west] at (blockanchor) (\currentID)
     \bgroup
   }
 
@@ -108,10 +118,11 @@
     \pgfmathparse{veclen(0.5 * \textwidth - \vx, 0) - 2 * \pgfoovalueof{blockPadding}}
     \let\currentWidth\pgfmathresult
     \pgfooget{blockPadding}{\currentPadding}
+    \pgfooget{currentID}{\currentID}
     \node [
       #1,
       inner sep=\currentPadding pt,
-      anchor=north west] at (blockanchor) (current)
+      anchor=north west] at (blockanchor) (\currentID)
     \bgroup
   }
 
@@ -119,10 +130,11 @@
 
   \method closeBlock(){
     \egroup;
+    \pgfooget{currentID}{\currentID}
     % keep track of largest y value
     \path let
     \p1 = (largesty),
-    \p2 = (current.south)
+    \p2 = (\currentID.south)
     in \ifdim \y2 < \y1 coordinate (largesty) at (\x1, \y2)\fi;
     % update internal state depending on chosen placement mode
     \ifthenelse{\equal{\pgfoovalueof{placementMode}}{rowFirst}}{%
@@ -131,6 +143,7 @@
       % else
       \pgfoothis.updateStateColumn()
     }
+    \pgfoothis.incrementID()
   }
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -144,7 +157,7 @@
     }{%
       % no, increment column number and move to next column
       \path let
-      \p1 = (current.north east)
+      \p1 = (\currentID.north east)
       in coordinate (blockanchor) at (\x1 + \pgfoovalueof{blockSpacing}pt, \y1);
       \pgfmathparse{int(\pgfoovalueof{currentColumn} + 1)}
       \pgfoolet{currentColumn}{\pgfmathresult}
@@ -156,7 +169,7 @@
   \method updateStateColumn() {
     % move to next row
     \path let
-    \p1 = (current.south west)
+    \p1 = (\currentID.south west)
     in coordinate (blockanchor) at (\x1, \y1 - \pgfoovalueof{blockSpacing}pt);
   }
 
