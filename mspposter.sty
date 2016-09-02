@@ -58,7 +58,8 @@
 
   \attribute columnWidth=20;
   \attribute topMargin=20;
-  \attribute blockSpacing=20;
+  \attribute blockHorizontalSpacing=20;
+  \attribute blockVerticalSpacing=20;
   \attribute columnAmount=1;
   \attribute currentColumn=1;
   \attribute blockPadding=10;
@@ -158,7 +159,7 @@
       % no, increment column number and move to next column
       \path let
       \p1 = (\currentID.north east)
-      in coordinate (blockanchor) at (\x1 + \pgfoovalueof{blockSpacing}pt, \y1);
+      in coordinate (blockanchor) at (\x1 + \pgfoovalueof{blockHorizontalSpacing}pt, \y1);
       \pgfmathparse{int(\pgfoovalueof{currentColumn} + 1)}
       \pgfoolet{currentColumn}{\pgfmathresult}
     }%
@@ -170,7 +171,7 @@
     % move to next row
     \path let
     \p1 = (\currentID.south west)
-    in coordinate (blockanchor) at (\x1, \y1 - \pgfoovalueof{blockSpacing}pt);
+    in coordinate (blockanchor) at (\x1, \y1 - \pgfoovalueof{blockVerticalSpacing}pt);
   }
 
 
@@ -181,7 +182,7 @@
     \coordinate (baseanchor) at (largesty -| baseanchor);
     % initialize block anchor to first column
     \coordinate
-        [below=\pgfoovalueof{blockSpacing}pt of baseanchor] (blockanchor);
+        [below=\pgfoovalueof{blockVerticalSpacing}pt of baseanchor] (blockanchor);
         % return to first column
         \pgfooset{currentColumn}{1}
   }
@@ -195,7 +196,7 @@
     % compute x-offset to base anchor
     \pgfmathparse{
       (\pgfoovalueof{currentColumn} - 1) * (
-      \pgfoovalueof{columnWidth} + \pgfoovalueof{blockSpacing} +
+      \pgfoovalueof{columnWidth} + \pgfoovalueof{blockHorizontalSpacing} +
       2 * \pgfoovalueof{blockPadding}
       )
     }
@@ -203,7 +204,7 @@
     \path let
     \p1 = (baseanchor)
     in coordinate (blockanchor) at
-    (\x1 + \pgfmathresult pt, \y1 - \pgfoovalueof{blockSpacing});
+    (\x1 + \pgfmathresult pt, \y1 - \pgfoovalueof{blockVerticalSpacing});
   }
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -214,7 +215,7 @@
     \pgfmathparse{ (
       \textwidth
       - 2 * \pgfoovalueof{columnAmount} * \pgfoovalueof{blockPadding}
-      - ( \pgfoovalueof{columnAmount} - 1) * \pgfoovalueof{blockSpacing}
+      - ( \pgfoovalueof{columnAmount} - 1) * \pgfoovalueof{blockHorizontalSpacing}
       ) / \pgfoovalueof{columnAmount}
     }
     \pgfoolet{columnWidth}{\pgfmathresult}
@@ -227,7 +228,7 @@
     \pgfooset{placementMode}{#2}
     \pgfoothis.setColumns(#1)
     \coordinate
-        [below=\pgfoovalueof{blockSpacing}pt of baseanchor] (blockanchor);
+        [below=\pgfoovalueof{blockVerticalSpacing}pt of baseanchor] (blockanchor);
   }
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -239,8 +240,9 @@
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  \method setBlockSpacing(#1) {
-    \pgfooset{blockSpacing}{#1}
+  \method setBlockSpacings(#1,#2) {
+    \pgfooset{blockHorizontalSpacing}{#1}
+    \pgfooset{blockVerticalSpacing}{#2}
     \pgfoothis.updateLayout()
   }
 
@@ -278,9 +280,9 @@
   \method setupAnchors() {
     % initialize the anchors
     % compute y-coordinate for all anchors,
-    % add blockSpacing to each y-coordinate, it is removed by the first block
+    % add blockVerticalSpacing to each y-coordinate, it is removed by the first block
     \pgfmathparse{
-      0.5\paperheight + \pgfoovalueof{blockSpacing} - \pgfoovalueof{topMargin}}
+      0.5\paperheight + \pgfoovalueof{blockVerticalSpacing} - \pgfoovalueof{topMargin}}
     % anchor for keeping track of largest y-value
     \coordinate (largesty) at (0, \pgfmathresult pt);
     % base anchor that is used to derive the actual anchors for
@@ -288,7 +290,7 @@
     \coordinate (baseanchor) at (-0.5 * \textwidth, \pgfmathresult pt);
     % initialize first block anchor
     \coordinate
-        [below=\pgfoovalueof{blockSpacing}pt of baseanchor] (blockanchor);
+        [below=\pgfoovalueof{blockVerticalSpacing}pt of baseanchor] (blockanchor);
   }
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -313,7 +315,13 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newcommand{\setblockspacing}[1] {
-  \poster.setBlockSpacing(#1)
+  \poster.setBlockSpacings(#1,#1)
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\setblockspacings}[2] {
+  \poster.setBlockSpacings(#1,#2)
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
