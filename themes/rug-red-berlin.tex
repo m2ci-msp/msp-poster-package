@@ -1,0 +1,49 @@
+\tikzset{
+    posterblock/.style={
+        opacity=0.1, % very transparent blocks
+        text opacity=1.0,
+        fill=black!20, % light grey poster block filling
+        draw,
+        very thick, % medium border thickness
+        inner sep=0,
+        outer sep=0,
+        rounded corners=0.1cm % sharper rounding than default
+    },
+    % default style for logo bar
+    logobar/.style={
+        align=center,
+        % make the bar a little bit wider than the paper width,
+        % such that the left and right borders are not visible
+        minimum width=\paperwidth + 10pt,
+        text width=\textwidth,
+		white,
+		opacity=1.0,
+        inner sep=5
+    },
+    title/.style={
+		white,
+		opacity=1.0,
+		fill=black!20!red, 		% rug red is PMS 186 / c0 m100 y80 k0 r204 g0 b0
+		anchor=north,
+    }
+}
+
+% tweak layout
+\setblockpadding{15}
+\setblockspacing{10}
+\setmargins{15}{15}
+
+
+
+\makeatletter
+\renewcommand{\maketitle}{
+    \begin{posterblock}[title]
+        \begin{center}
+            {\huge{\bf{\@title}}} \\
+            \vspace{10pt}
+            {\Large\@author}
+        \end{center}
+
+    \end{posterblock}
+}
+\makeatother
