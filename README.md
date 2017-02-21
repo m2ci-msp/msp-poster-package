@@ -140,7 +140,11 @@ Use
 \setblockspacing{Y}
 ```
 to change the spacing between two blocks to Y.
+The horizontal and vertical spacings can be set individually by using the command
 
+```latex
+\setblockspacings{HORIZONTAL}{VERTICAL}
+```
 Change the margins with
 
 ```latex
@@ -259,6 +263,23 @@ Example file that represents the default theme applied when using [themes/defaul
 \makeatother
 ```
 
+## Poster block IDs
+
+Each poster block is internally a tikZ node and can be accessed by using a unique ID that depends on the order of the blocks:
+The ID for the first block is 1, for the second block, we have ID 2 and so on.
+
+## Shifted poster
+
+Use the environment
+
+```latex
+\begin{shiftedposter}[T, RIGHT, DOWN]
+```
+
+to create a shifted version of the poster with optional theme parameter *T*.
+*RIGHT* is the right shift and *DOWN* the down shift of the result.
+This enivronment might be helpful if you are using the poster package to design a title page for your document.
+
 ## Limitations
 
 - Floating environments like *figure* and *table* are not supported inside a poster block.
@@ -271,8 +292,6 @@ Example file that represents the default theme applied when using [themes/defaul
   1. Like proposed on [TeX Stackexchange], typeset the TikZ picture in a *savebox* and use it later on.
   2. Create a PDF of the TikZ picture and use *\includegraphics* in the posterblock environment.
   3. Use the [Standalone package] for including the TikZ picture.
-
-
 
 ## Example
 
