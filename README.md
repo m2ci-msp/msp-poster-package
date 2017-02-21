@@ -265,7 +265,7 @@ Example file that represents the default theme applied when using [themes/defaul
 
 ## Poster block IDs
 
-Each poster block is internally a tikZ node and can be accessed by using a unique ID that depends on the order of the blocks:
+Each poster block is internally a TikZ node and can be accessed by using a unique ID that depends on the order of the blocks:
 The ID for the first block is 1, for the second block, we have ID 2 and so on.
 
 ## Shifted poster
