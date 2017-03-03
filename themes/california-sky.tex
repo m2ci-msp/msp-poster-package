@@ -1,0 +1,60 @@
+\tikzset{
+       title/.style={
+       	white,
+       	opacity=1.0,
+       	fill=flow-blue,
+       	anchor=north,
+       	draw=flow-blue,
+       	rounded corners
+       },
+   
+    posterblock/.style={
+        opacity=1.0,
+        text opacity=1.0,
+        fill=white,
+        draw,
+        ultra thick,
+        inner sep=0,
+        outer sep=0,
+        rounded corners
+    },
+
+    posterblocktrans/.style={
+	    opacity=1.0,
+	    text opacity=1.0,
+	    fill=white,
+	    draw,
+	    ultra thick,
+	    inner sep=5,
+	    outer sep=0,
+	    rounded corners
+    },
+
+    logobar/.style={
+        align=center,
+        minimum width=\paperwidth + 10pt,
+        text width=\textwidth,
+		fill=white,
+		opacity=1.0,
+		decoration=random steps,
+		decorate,
+        inner sep=5
+    }
+}
+
+\setblockpadding{15}
+\setblockspacing{10}
+\setmargins{15}{15}
+\shadebackground{blue!15}{white!30}
+
+\makeatletter
+\renewcommand{\maketitle}{
+    \begin{posterblock}[title]
+        \begin{center}
+            {\huge{\bf{\@title}}} \\
+            \vspace{10pt}
+            {\large\@author}
+        \end{center}
+    \end{posterblock}
+}
+\makeatother
