@@ -1,0 +1,55 @@
+\definecolor{mmciblue}{HTML}{0074AF}
+\tikzset{
+       title/.style={
+       	opacity=1.0,
+       	fill=mmciblue!20,
+       	anchor=north,
+       	draw=black,
+        ultra thick,
+       	rounded corners
+       },
+    posterblock/.style={
+        opacity=1.0,
+        text opacity=1.0,
+        fill=white,
+        draw,
+        ultra thick,
+        inner sep=0,
+        outer sep=0,
+        rounded corners
+    },
+    posterblocktrans/.style={
+	    opacity=1.0,
+	    text opacity=1.0,
+	    fill=white,
+	    draw,
+	    ultra thick,
+	    inner sep=5,
+	    outer sep=0,
+	    rounded corners
+    },
+    logobar/.style={
+        align=center,
+        minimum width=\paperwidth + 10pt,
+        text width=\textwidth,
+		opacity=1.0,
+        inner sep=5
+    }
+}
+
+\setblockpadding{5}
+\setblockspacing{15}
+\setmargins{15}{15}
+\shadebackground{white}{mmciblue!70}
+
+\makeatletter
+\renewcommand{\maketitle}{
+    \begin{posterblock}[title]
+        \begin{center}
+            {\huge{\bf{\@title}}} \\
+            \vspace{10pt}
+            {\large\@author}
+        \end{center}
+    \end{posterblock}
+}
+\makeatother
