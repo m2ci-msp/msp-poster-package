@@ -389,7 +389,7 @@
   % ignore leading white space
   \ignorespaces
   % place content inside a minipage with specified height and width
-  \begin{minipage}[c][#3pt][t]{#2 pt}%
+  \begin{minipage}[c][#3][t]{#2}%
 }{%
   \end{minipage}%
   \poster.closeBlock()
@@ -404,7 +404,7 @@
   \ignorespaces
   % place content inside a minipage with specified height and current text
   % width
-  \begin{minipage}[c][#2pt][t]{\currentWidth pt}%
+  \begin{minipage}[c][#2][t]{\currentWidth pt}%
 }{%
   \end{minipage}%
   \poster.closeBlock()
