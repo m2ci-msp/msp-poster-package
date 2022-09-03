@@ -2,8 +2,9 @@
 
 ## Introduction
 
-Based on an idea by Ingmar Steiner, this package is meant to make creating posters for presentations as simple as writing a basic article in LaTeX.
-This means the user can focus mainly on the content and is not required to pay a lot of attention to mangling with the layout.
+The goal of this package is to **design this poster in A4 format and then scale it to A0** by taking advantages of the vectorial nature of a PDF.
+By contrast to other packages such as tikzposter, the users do not have to think about scalability, ....
+On the other hand, **if a pixel-based image is required, the user has to ensure that its resolution is high enough**.
 
 The package uses [PGF and TikZ] to automatically generate the layout of the poster.
 
@@ -443,6 +444,19 @@ Resulting poster:
 
 ![][Example]
 
+## How to scale to A0?
+You can use [cpdf](https://community.coherentpdf.com/).
+
+For portrait, use the following command
+
+```sh
+cpdf -scale-to-fit a0 input.pdf -o output.pdf
+```
+
+For landscape, use the following command
+```sh
+cpdf -scale-to-fit a0landscape input.pdf -o output.pdf
+```
 
 [PGF and TikZ]: http://sourceforge.net/projects/pgf/ "PGF and TikZ"
 [TeX Stackexchange]: http://tex.stackexchange.com/questions/23411/tikzpicture-in-node-of-another-tikzpicture-how-to-screen-of-from-inheriting-sty "TeX Stackexchange"
