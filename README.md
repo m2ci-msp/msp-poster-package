@@ -450,7 +450,7 @@ You can use [cpdf](https://community.coherentpdf.com/).
 For portrait, use the following command
 
 ```sh
-cpdf -scale-to-fit a0 input.pdf -o output.pdf
+cpdf -scale-to-fit a0portrait input.pdf -o output.pdf
 ```
 
 For landscape, use the following command
